@@ -1,12 +1,13 @@
-import React from 'react';
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
-import { ValidationError } from '../../utils/validations';
+import React from "react";
+import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { ValidationError } from "../../utils/validations";
 
 interface NavigationButtonsProps {
   currentStep: number;
   totalSteps: number;
   onBack: () => void;
   onNext: () => void;
+  handleClick: () => void;
   isLastStep: boolean;
   error: ValidationError | null;
 }
@@ -17,6 +18,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   onNext,
   isLastStep,
   error,
+  handleClick,
 }) => {
   return (
     <div className="space-y-4">
@@ -47,7 +49,8 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
           </button>
         ) : (
           <button
-            type="submit"
+            type="button"
+            onClick={handleClick}
             className="ml-auto inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
           >
             <Check className="h-4 w-4 mr-2" />

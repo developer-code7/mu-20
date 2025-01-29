@@ -5,18 +5,99 @@ import {
   fetchChallengesSuccess,
   fetchChallengesFailure,
 } from "./challengesSlice";
-import { supabase } from "../../../../supabase/supabase.client"; // Path to Supabase client
+
+import { supabase } from "../../../../supabase/supabase.client";
 
 export const fetchChallenges = createAsyncThunk(
   "challenges/fetchChallenges",
-  async (_, { dispatch }) => {
+  async (userId: string, { dispatch }) => {
     dispatch(fetchChallengesStart());
+
     try {
-      const { data, error } = await supabase.from("challenges").select("*");
-      if (error) throw new Error(error.message);
-      dispatch(fetchChallengesSuccess(data));
+      const { data: userChallenges, error: userChallengesError } =
+        await supabase.rpc("get_user_challenges", { user_input_id: userId });
+
+      if (userChallengesError) throw new Error(userChallengesError.message);
+
+      // Fetch all challenges
+
+      console.log(userChallenges);
+      const { data: allChallenges, error: allChallengesError } = await supabase
+        .from("challenges")
+        .select("*");
+
+      if (allChallengesError) throw new Error(allChallengesError.message);
+
+      const challenges = allChallenges.map((challenge) => {
+        const alreadyRegistered = userChallenges.some(
+          (userChallenge) =>
+            userChallenge.challenge_id === challenge.challenge_id
+        );
+        const timeConflict = userChallenges.some(
+          (userChallenge) =>
+            challenge.start_date < userChallenge.end_date &&
+            challenge.end_date > userChallenge.start_date
+        );
+
+        return {
+          ...challenge,
+          already_registered: alreadyRegistered,
+          time_conflict: timeConflict,
+        };
+      });
+
+      // Dispatch the final data
+      dispatch(fetchChallengesSuccess(challenges));
     } catch (err: any) {
       dispatch(fetchChallengesFailure(err.message));
+    }
+  }
+);
+
+export const fetchChallengeById = createAsyncThunk(
+  "challenges/fetchChallengeById",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase
+        .from("challenges")
+        .select("*")
+        .eq("challenge_id", id)
+        .single();
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      console.log("DATA", data);
+
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchUserChallenges = createAsyncThunk(
+  "challenges/fetchUserChallenges",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase.rpc("fetch_user_challenges", {
+        user_id_input: userId,
+      });
+
+      const activeChallenges = [];
+      const unactiveChallenges = [];
+
+      for (const challenge of data) {
+        if (challenge?.challenge_details?.is_active) {
+          activeChallenges.push(challenge);
+        } else {
+          unactiveChallenges.push(challenge);
+        }
+      }
+
+      return { activeChallenges, unactiveChallenges };
+    } catch (error) {
+      return rejectWithValue(error.message);
     }
   }
 );

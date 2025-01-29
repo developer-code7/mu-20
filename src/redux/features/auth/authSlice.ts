@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { registerUser } from "./authAction";
+import { loginUser, registerUser } from "./authAction";
 
 interface AuthState {
   session: string | null;
@@ -14,7 +14,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  session: "" ,
+  session: "",
   user: null,
   loading: false,
   error: null,
@@ -41,13 +41,24 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
-      })
+
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Registration failed";
+      })
+
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Login failed";
       });
   },
 });

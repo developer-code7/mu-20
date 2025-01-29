@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAppSelector } from "../hooks/useAppSelector";
 import StepIndicator from "../components/registration/StepIndicator";
 import NavigationButtons from "../components/registration/NavigationButtons";
 import ChallengeStep from "../components/registration/steps/ChallengeStep";
@@ -7,82 +8,146 @@ import CommitteeStep from "../components/registration/steps/CommitteeStep";
 import TeamStep from "../components/registration/steps/TeamStep";
 import ReviewStep from "../components/registration/steps/ReviewStep";
 import { validateStep, ValidationError } from "../utils/validations";
-
+import { registerForChallenge } from "../utils/registerForChallenge";
+import { useDispatch } from "react-redux";
+import { fetchChallengeById } from "../redux/features/challenges/challengesActions";
+interface ChallengeRegisterationProps {
+  openModal: () => void;
+}
 interface FormData {
-  challenge_id: string;
+  challenge: {
+    id: string;
+    name: string;
+    team_size: number;
+  } | null;
   committee_preferences: {
-    [key: string]: string[];
+    [key: string]: {
+      committee_name: string;
+      portfolio_preferences: { portfolio_id: string; portfolio_name: string }[];
+    };
   };
   team_name: string;
-  team_members: string[];
+  team_members: { user_id: string; full_name: string }[];
 }
 
 const TOTAL_STEPS = 4;
 
-const ChallengeRegisteration = () => {
+const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
+  openModal,
+}) => {
+  const { user } = useAppSelector((state) => state.auth);
+  const { id } = useParams();
+  const dispatch = useDispatch();
   const [step, setStep] = useState(1);
   const [error, setError] = useState<ValidationError | null>(null);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
-    challenge_id: "",
+    challenge: null,
     committee_preferences: {},
     team_name: "",
     team_members: [],
   });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (id) {
+        const response = await dispatch(fetchChallengeById(id)).unwrap();
+        if (response) {
+          setFormData((prev) => ({
+            ...prev,
+            challenge: {
+              id: response.challenge_id,
+              name: response.challenge_name,
+              team_size: response.team_size,
+            },
+          }));
+        }
+      }
+    };
+
+    fetchData();
+  }, [id, dispatch]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => {
-      if (name === "challenge_id") {
-        return { ...prev, [name]: value, committee_preferences: {} };
-      }
-      if (name === "school_id") {
-        return { ...prev, [name]: value, team_members: [] };
-      }
       return { ...prev, [name]: value };
     });
     setError(null);
   };
+  const handleChallengeSelect = (challenge: {
+    id: string;
+    name: string;
+    team_size: number;
+  }) => {
+    setFormData((prev) => ({
+      ...prev,
+      challenge,
+      committee_preferences: {}, // Reset committee preferences when challenge changes
+      team_members: [],
+    }));
+    setError(null);
+  };
 
-  const handleCommitteeToggle = (committeeId: string) => {
+  const handleCommitteeToggle = (
+    committeeId: string,
+    committeeName: string
+  ) => {
     setFormData((prev) => {
       const newPreferences = { ...prev.committee_preferences };
       if (newPreferences[committeeId]) {
         delete newPreferences[committeeId];
       } else {
-        newPreferences[committeeId] = [];
+        newPreferences[committeeId] = {
+          committee_name: committeeName,
+          portfolio_preferences: [],
+        };
       }
       return { ...prev, committee_preferences: newPreferences };
     });
     setError(null);
   };
 
-  const handlePortfolioChange = (committeeId: string, portfolioId: string) => {
+  const handlePortfolioChange = (
+    committeeId: string,
+    portfolio_id: string,
+    portfolio_name: string
+  ) => {
     setFormData((prev) => {
       const newPreferences = { ...prev.committee_preferences };
-      const currentPortfolios = newPreferences[committeeId] || [];
-      const portfolioIndex = currentPortfolios.indexOf(portfolioId);
+      const currentPortfolios =
+        newPreferences[committeeId]?.portfolio_preferences || [];
+      const portfolioIndex = currentPortfolios.findIndex(
+        (p) => p.portfolio_id === portfolio_id
+      );
 
       if (portfolioIndex === -1) {
-        newPreferences[committeeId] = [...currentPortfolios, portfolioId];
+        currentPortfolios.push({ portfolio_id, portfolio_name });
       } else {
-        newPreferences[committeeId] = currentPortfolios.filter(
-          (id) => id !== portfolioId
-        );
+        currentPortfolios.splice(portfolioIndex, 1);
       }
 
+      newPreferences[committeeId] = {
+        ...newPreferences[committeeId],
+        portfolio_preferences: currentPortfolios,
+      };
       return { ...prev, committee_preferences: newPreferences };
     });
     setError(null);
   };
 
-  const handleTeamMemberToggle = (userId: string) => {
+  const handleTeamMemberToggle = (user: {
+    user_id: string;
+    full_name: string;
+  }) => {
     setFormData((prev) => {
-      const newMembers = prev.team_members.includes(userId)
-        ? prev.team_members.filter((id) => id !== userId)
-        : [...prev.team_members, userId];
+      const newMembers = prev.team_members.find(
+        (member) => member.user_id === user.user_id
+      )
+        ? prev.team_members.filter((member) => member.user_id !== user.user_id)
+        : [...prev.team_members, user];
       return { ...prev, team_members: newMembers };
     });
     setError(null);
@@ -90,7 +155,7 @@ const ChallengeRegisteration = () => {
 
   const handleNext = () => {
     const validationError = validateStep(step, formData);
-    
+
     if (validationError) {
       setError(validationError);
       return;
@@ -119,29 +184,29 @@ const ChallengeRegisteration = () => {
 
     const formattedData = {
       user: {
-        fullname: formData.fullname,
-        email: formData.email,
-        password: formData.password,
-        school_id: formData.school_id,
+        id: user?.id,
+        fullname: user?.fullName,
+        email: user?.email,
+        school_id: user?.schoolId,
       },
       selected_challenge: {
-        challenge_id: formData.challenge_id,
+        challenge: formData.challenge,
         committee_preference: Object.entries(
           formData.committee_preferences
-        ).map(([committee_id, portfolios]) => ({
+        ).map(([committee_id, { committee_name, portfolio_preferences }]) => ({
           committee_id,
-          portfolio_preferences: portfolios.map((portfolio_id) => ({
-            portfolio_id,
-          })),
+          committee_name,
+          portfolio_preferences,
         })),
       },
       team_details: {
         team_name: formData.team_name,
-        team_members: formData.team_members.map((user_id) => ({ user_id })),
+        team_members: formData.team_members,
       },
     };
-
-    console.log("Formatted submission:", formattedData);
+    registerForChallenge(formattedData);
+    openModal();
+    navigate("/dashboard");
   };
 
   const renderStep = () => {
@@ -149,14 +214,15 @@ const ChallengeRegisteration = () => {
       case 1:
         return (
           <ChallengeStep
-            challengeId={formData.challenge_id}
-            onChange={handleInputChange}
+            userId={user?.id}
+            selectedChallenge={formData.challenge}
+            onChallengeSelect={handleChallengeSelect}
           />
         );
       case 2:
         return (
           <CommitteeStep
-            challengeId={formData.challenge_id}
+            selectedChallenge={formData.challenge}
             committeePreferences={formData.committee_preferences}
             onCommitteeToggle={handleCommitteeToggle}
             onPortfolioChange={handlePortfolioChange}
@@ -165,7 +231,9 @@ const ChallengeRegisteration = () => {
       case 3:
         return (
           <TeamStep
-            schoolId={formData.school_id}
+            schoolId={user?.schoolId}
+            teamLeader={user}
+            selectedChallenge={formData.challenge}
             teamName={formData.team_name}
             teamMembers={formData.team_members}
             onChange={handleInputChange}
@@ -173,7 +241,7 @@ const ChallengeRegisteration = () => {
           />
         );
       case 4:
-        return <ReviewStep formData={formData} />;
+        return <ReviewStep formData={formData} user={user} />;
       default:
         return null;
     }
@@ -194,20 +262,9 @@ const ChallengeRegisteration = () => {
             onNext={handleNext}
             isLastStep={step === TOTAL_STEPS}
             error={error}
+            handleClick={handleSubmit}
           />
         </form>
-
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
-            Already have an account?{" "}
-            <Link
-              to="/"
-              className="font-medium text-orange-600 hover:text-orange-500"
-            >
-              Sign in
-            </Link>
-          </p>
-        </div>
       </div>
     </div>
   );

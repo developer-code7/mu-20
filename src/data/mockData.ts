@@ -7,7 +7,7 @@ export const mockData = {
     { id: "sch_005", name: "The Shri Ram School" },
     { id: "sch_006", name: "Amity International School" },
   ],
-  
+
   challenges: [
     { id: "ch_001", name: "OxfordMUN India- Pre Challenge" },
     { id: "ch_002", name: "Craft the Future Challenge" },
@@ -16,7 +16,7 @@ export const mockData = {
   ],
 
   committees: {
-    "ch_001": [
+    ch_001: [
       {
         id: "com_001",
         name: "United Nations Security Council",
@@ -38,7 +38,7 @@ export const mockData = {
         ],
       },
     ],
-    "ch_002": [
+    ch_002: [
       {
         id: "com_003",
         name: "Innovation Committee",
@@ -60,7 +60,7 @@ export const mockData = {
         ],
       },
     ],
-    "ch_003": [
+    ch_003: [
       {
         id: "com_005",
         name: "Technology Panel",
@@ -72,7 +72,7 @@ export const mockData = {
         ],
       },
     ],
-    "ch_004": [
+    ch_004: [
       {
         id: "com_006",
         name: "Leadership Council",
@@ -88,15 +88,64 @@ export const mockData = {
 
   // Demo users for team member selection (per school)
   schoolUsers: {
-    "sch_001": [
+    sch_001: [
       { id: "usr_001", name: "John Doe", email: "john@example.com" },
       { id: "usr_002", name: "Jane Smith", email: "jane@example.com" },
       { id: "usr_003", name: "Alex Johnson", email: "alex@example.com" },
     ],
-    "sch_002": [
+    sch_002: [
       { id: "usr_004", name: "Sarah Wilson", email: "sarah@example.com" },
       { id: "usr_005", name: "Mike Brown", email: "mike@example.com" },
       { id: "usr_006", name: "Emily Davis", email: "emily@example.com" },
     ],
   },
 };
+interface Conference {
+  id: string;
+  title: string;
+  registrationClosesIn: number;
+  description: string;
+  startDate: string;
+}
+export const conferences: Conference[] = [
+  {
+    id: "1",
+    title: "International Conference on Technology",
+    registrationClosesIn: 5,
+    startDate: "2024-04-01",
+    description:
+      "Join us for an exciting conference exploring the latest trends in technology, featuring keynote speakers from leading tech companies and innovative workshops.",
+  },
+  {
+    id: "2",
+    title: "Global Business Summit",
+    registrationClosesIn: 5,
+    startDate: "2024-04-15",
+    description:
+      "Connect with industry leaders and explore cutting-edge business strategies at our annual Global Business Summit.",
+  },
+  {
+    id: "3",
+    title: "Arts and Culture Symposium",
+    registrationClosesIn: 5,
+    startDate: "2024-04-10",
+    description:
+      "Immerse yourself in a celebration of arts and culture, featuring exhibitions, performances, and discussions with renowned artists.",
+  },
+  {
+    id: "4",
+    title: "Environmental Sustainability Forum",
+    registrationClosesIn: 5,
+    startDate: "2024-04-05",
+    description:
+      "Explore sustainable solutions and environmental innovations with experts from around the world.",
+  },
+  {
+    id: "5",
+    title: "Healthcare Innovation Conference",
+    registrationClosesIn: 5,
+    startDate: "2024-04-20",
+    description:
+      "Discover the future of healthcare with presentations on medical breakthroughs, digital health, and healthcare policy.",
+  },
+];

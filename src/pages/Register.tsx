@@ -38,7 +38,7 @@ const Register = () => {
       console.log("User Registered Successfully:", response);
 
       if (response) {
-        redirect("/");
+        redirect("/login");
       }
     } catch (error) {
       console.error("Registration Failed:", error);
@@ -91,7 +91,7 @@ const Register = () => {
           <p className="text-sm text-gray-600">
             Already have an account?{" "}
             <Link
-              to="/"
+              to="/login"
               className="font-medium text-orange-600 hover:text-orange-500"
             >
               Login

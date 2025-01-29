@@ -5,26 +5,36 @@ import { RootState } from "../../../redux/store";
 import { fetchUsersBySchoolId } from "../../../redux/features/users/usersAction";
 
 interface TeamStepProps {
-  schoolId: string;
+  schoolId: string | null;
+  teamLeader: {
+    id: string;
+    email: string;
+    fullName: string;
+    schoolId: string;
+  } | null;
+  selectedChallenge: { id: string; name: string; team_size: number | 1 } | null;
   teamName: string;
-  teamMembers: string[];
+  teamMembers: { user_id: string; full_name: string }[]; // Updated to store user objects
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onTeamMemberToggle: (userId: string) => void;
+  onTeamMemberToggle: (user: { user_id: string; full_name: string }) => void; // Updated to pass full user object
 }
 
 const TeamStep: React.FC<TeamStepProps> = ({
   schoolId,
+  teamLeader,
   teamName,
   teamMembers,
   onChange,
   onTeamMemberToggle,
+  selectedChallenge,
 }) => {
   const dispatch = useAppDispatch();
   const { users, loading } = useAppSelector((state: RootState) => state.users);
 
   useEffect(() => {
-    dispatch(fetchUsersBySchoolId(schoolId));
-    console.log(users);
+    if (schoolId) {
+      dispatch(fetchUsersBySchoolId(schoolId));
+    }
   }, [dispatch, schoolId]);
 
   return (
@@ -44,32 +54,45 @@ const TeamStep: React.FC<TeamStepProps> = ({
         />
       </div>
 
-      <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">
-          Select Team Members
-        </h3>
-        <div className="space-y-2">
-          {schoolId &&
-            !loading &&
-            users?.map((user) => (
-              <div key={user.user_id} className="flex items-center">
-                <input
-                  type="checkbox"
-                  id={`user-${user.user_id}`}
-                  checked={teamMembers.includes(user.user_id)}
-                  onChange={() => onTeamMemberToggle(user.user_id)}
-                  className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
-                />
-                <label
-                  htmlFor={`user-${user.user_id}`}
-                  className="ml-2 text-sm text-gray-600"
-                >
-                  {user.full_name}
-                </label>
-              </div>
-            ))}
+      {selectedChallenge?.team_size > 1 && (
+        <div>
+          <h3 className="text-lg font-medium text-gray-900 mb-4">
+            Select Team Members
+          </h3>
+          <div className="space-y-2">
+            {schoolId &&
+              !loading &&
+              users?.map((user) => {
+                if (user.user_id === teamLeader?.id) return null;
+                else
+                  return (
+                    <div key={user.user_id} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id={`user-${user.user_id}`}
+                        checked={teamMembers?.some(
+                          (member) => member.user_id === user.user_id
+                        )} // Check if user is in the team
+                        onChange={() =>
+                          onTeamMemberToggle({
+                            user_id: user.user_id,
+                            full_name: user.full_name,
+                          })
+                        }
+                        className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                      />
+                      <label
+                        htmlFor={`user-${user.user_id}`}
+                        className="ml-2 text-sm text-gray-600"
+                      >
+                        {user.full_name}
+                      </label>
+                    </div>
+                  );
+              })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

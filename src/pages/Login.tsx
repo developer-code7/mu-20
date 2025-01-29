@@ -1,14 +1,25 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { User, Lock } from 'lucide-react';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { User, Lock } from "lucide-react";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { loginUser } from "../redux/features/auth/authAction";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch();
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
+    try {
+      const response = await dispatch(loginUser({ email, password })).unwrap();
+
+      navigate("/dashboard")
+    } catch (err: any) {
+      setError(err);
+      console.error("Login failed:", err);
+    }
   };
 
   return (
@@ -16,8 +27,11 @@ const Login = () => {
       <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">MU20</h1>
-          <p className="text-gray-600">Welcome back! Please login to continue.</p>
+          <p className="text-gray-600">
+            Welcome back! Please login to continue.
+          </p>
         </div>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -68,7 +82,7 @@ const Login = () => {
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
+            Don't have an account?{" "}
             <Link
               to="/register"
               className="font-medium text-orange-600 hover:text-orange-500"
