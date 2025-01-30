@@ -4,6 +4,7 @@ import challengesReducer from "./features/challenges/challengesSlice";
 import committeesReducer from "./features/committees/committeesSlice";
 import usersReducer from "./features/users/usersSlice";
 import authReducer from "./features/auth/authSlice";
+import conferencesReducer from "./features/conferences/conferenceSlice";
 export const store = configureStore({
   reducer: {
     schools: schoolsReducer,
@@ -11,6 +12,7 @@ export const store = configureStore({
     committees: committeesReducer,
     users: usersReducer,
     auth: authReducer,
+    conferences: conferencesReducer,
   },
 });
 

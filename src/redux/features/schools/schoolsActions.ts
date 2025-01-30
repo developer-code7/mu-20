@@ -12,7 +12,9 @@ export const fetchSchools = createAsyncThunk(
   async (_, { dispatch }) => {
     dispatch(fetchSchoolsStart());
     try {
-      const { data, error } = await supabase.from("schools").select("*");
+      const { data, error } = await supabase
+        .from("schools")
+        .select("school_id, school_name");
       if (error) throw new Error(error.message);
       dispatch(fetchSchoolsSuccess(data));
     } catch (err: any) {

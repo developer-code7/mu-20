@@ -12,8 +12,8 @@ export const fetchUsersBySchoolId = createAsyncThunk(
     dispatch(fetchUsersStart());
     try {
       const { data: users, error } = await supabase
-        .from("users") // Adjust table name if necessary
-        .select("user_id, full_name") // Fetch only user_id and full_name
+        .from("users") 
+        .select("*")
         .eq("school_id", schoolId);
 
       if (error) throw new Error(error.message);

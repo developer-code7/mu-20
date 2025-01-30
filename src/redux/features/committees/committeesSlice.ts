@@ -1,12 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-interface Committee {
-  committee_id: string;
-  committee_name: string;
-  description: string;
-  portfolios: Array<any>;
-  created_at: string;
-}
+import { Committee } from "../../../types/type";
 
 interface CommitteesState {
   committees: Committee[];
@@ -31,6 +24,7 @@ const committeesSlice = createSlice({
     fetchCommitteesSuccess(state, action: PayloadAction<Committee[]>) {
       state.loading = false;
       state.committees = action.payload;
+      console.log(state.committees);
     },
     fetchCommitteesFailure(state, action: PayloadAction<string>) {
       state.loading = false;

@@ -1,6 +1,6 @@
 // /redux/features/schools/schoolsSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { School } from '../../../types';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { School } from "../../../types/type";
 
 interface SchoolsState {
   data: School[];
@@ -15,7 +15,7 @@ const initialState: SchoolsState = {
 };
 
 const schoolsSlice = createSlice({
-  name: 'schools',
+  name: "schools",
   initialState,
   reducers: {
     fetchSchoolsStart(state) {
@@ -33,10 +33,7 @@ const schoolsSlice = createSlice({
   },
 });
 
-export const {
-  fetchSchoolsStart,
-  fetchSchoolsSuccess,
-  fetchSchoolsFailure,
-} = schoolsSlice.actions;
+export const { fetchSchoolsStart, fetchSchoolsSuccess, fetchSchoolsFailure } =
+  schoolsSlice.actions;
 
 export default schoolsSlice.reducer;

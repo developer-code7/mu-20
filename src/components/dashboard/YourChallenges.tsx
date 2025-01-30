@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Users, Target, Calendar, Clock } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Users, Calendar, Clock } from "lucide-react";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchUserChallenges } from "../../redux/features/challenges/challengesActions";
 import { formatDate } from "../../utils/formateDate";
+import Skelleton from "./Skelleton";
+
 const YourChallenges = () => {
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
   const { userChallenges, loading } = useAppSelector(
@@ -14,8 +16,6 @@ const YourChallenges = () => {
   useEffect(() => {
     if (user) {
       dispatch(fetchUserChallenges(user.id));
-
-      
     }
   }, [user, dispatch]);
 
@@ -49,8 +49,10 @@ const YourChallenges = () => {
 
       <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
         {activeTab === "upcoming" ? (
-          <div className="space-y-4">
-            {loading && <div>Loading...</div>}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {loading &&
+              [...Array(6)].map((_, index) => <Skelleton key={index} />)}
+
             {!loading && userChallenges.activeChallenges.length === 0 ? (
               <div className="border text-white border-gray-700 rounded-lg p-4 hover:border-orange-500 transition-colors">
                 You have not registered for any upcoming challenges
@@ -122,7 +124,7 @@ const YourChallenges = () => {
                     <div className="flex items-start justify-between">
                       <div>
                         <h3 className="text-lg font-medium text-white">
-                          {challenge?.registration_details?.challenge_name}
+                          {challenge?.challenge_details?.challenge_name}
                         </h3>
                         <div className="mt-2 space-y-2">
                           <div className="flex items-center text-sm text-gray-400">

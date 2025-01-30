@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAppSelector } from "../hooks/useAppSelector";
 import StepIndicator from "../components/registration/StepIndicator";
 import NavigationButtons from "../components/registration/NavigationButtons";
@@ -11,8 +11,10 @@ import { validateStep, ValidationError } from "../utils/validations";
 import { registerForChallenge } from "../utils/registerForChallenge";
 import { useDispatch } from "react-redux";
 import { fetchChallengeById } from "../redux/features/challenges/challengesActions";
+import { ArrowLeft } from "lucide-react";
 interface ChallengeRegisterationProps {
   openModal: () => void;
+  handleLoading: (val: boolean) => void;
 }
 interface FormData {
   challenge: {
@@ -34,6 +36,7 @@ const TOTAL_STEPS = 4;
 
 const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
   openModal,
+  handleLoading,
 }) => {
   const { user } = useAppSelector((state) => state.auth);
   const { id } = useParams();
@@ -204,9 +207,15 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
         team_members: formData.team_members,
       },
     };
-    registerForChallenge(formattedData);
-    openModal();
-    navigate("/dashboard");
+    registerForChallenge(formattedData)
+      .then(() => {
+        openModal();
+        navigate("/dashboard");
+        handleLoading(false);
+      })
+      .catch((error) => console.log(error));
+
+    handleLoading(true);
   };
 
   const renderStep = () => {
@@ -214,7 +223,7 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
       case 1:
         return (
           <ChallengeStep
-            userId={user?.id}
+            id={user?.id}
             selectedChallenge={formData.challenge}
             onChallengeSelect={handleChallengeSelect}
           />
@@ -246,9 +255,17 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
         return null;
     }
   };
-
+  const { conferenceId } = useParams();
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className=" min-h-screen flex flex-col  items-center justify-center p-4">
+      <Link
+        to={`/dashboard/conference/${conferenceId}`}
+        className="text-xl inline-flex items-center text-[#FF5722] hover:text-[#F4511E] mb-6"
+      >
+        <ArrowLeft size={22} className="mr-2" />
+        Back to Conferences
+      </Link>
+
       <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
         <StepIndicator currentStep={step} totalSteps={TOTAL_STEPS} />
 

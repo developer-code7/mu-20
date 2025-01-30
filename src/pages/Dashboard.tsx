@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Layout, Trophy, Award, Settings, Bell, User } from "lucide-react";
 import { Link, Routes, Route, Navigate } from "react-router-dom";
-import Challenges from "../components/dashboard/Challenges";
 import YourChallenges from "../components/dashboard/YourChallenges";
 import DashboardSettings from "../components/dashboard/DashboardSettings";
 import ConferencesPage from "./ConferencePage";

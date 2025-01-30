@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
 import CongratulationsModal from "./components/CongratulationsModal";
+import Loader from "./components/Loader";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -48,23 +49,32 @@ function App() {
     fetchUserSession();
   }, []);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const openModal = () => {
     setIsModalOpen(true);
   };
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  const handleLoading = (val: boolean) => {
+    setIsLoading(val);
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
       <CongratulationsModal isOpen={isModalOpen} onClose={closeModal} />
+      {isLoading && <Loader fullScreen={true} />}
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
-          path="/challenge-register/:id"
+          path="conference/:conferenceId/challenge-register/:id"
           element={
             <PrivateRoute>
-              <ChallengeRegisteration openModal={openModal} />
+              <ChallengeRegisteration
+                openModal={openModal}
+                handleLoading={handleLoading}
+              />
             </PrivateRoute>
           }
         />

@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ConferenceCard from "../components/dashboard/ConferenceCard";
-import { conferences } from "../data/mockData";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { useAppSelector } from "../hooks/useAppSelector";
+import { fetchConferences } from "../redux/features/conferences/conferencesActions";
+import Skelleton from "../components/dashboard/Skelleton";
 
 const ConferencesPage: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { conferences, loading } = useAppSelector((state) => state.conferences);
+
+  useEffect(() => {
+    dispatch(fetchConferences());
+  }, []);
   return (
     <div className="min-h-screen bg-[#0F1729] p-8">
       <div className="max-w-7xl mx-auto">
@@ -14,9 +23,19 @@ const ConferencesPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {conferences.map((conference) => (
-            <ConferenceCard key={conference.id} conference={conference} />
-          ))}
+          {loading &&
+            [...Array(6)].map((_, index) => <Skelleton key={index} />)}
+
+          {!loading && conferences.length > 0
+            ? conferences.map((conference) => (
+                <ConferenceCard
+                  key={conference.conference_id}
+                  conference={conference}
+                />
+              ))
+            : !loading && (
+                <div className="text-gray-400">No Active Conferences Found</div>
+              )}
         </div>
       </div>
     </div>

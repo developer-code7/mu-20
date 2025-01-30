@@ -1,17 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { loginUser, registerUser } from "./authAction";
-
-interface AuthState {
-  session: string | null;
-  user: {
-    id: string;
-    email: string;
-    fullName: string;
-    schoolId: string;
-  } | null;
-  loading: boolean;
-  error: string | null;
-}
+import { AuthState } from "../../../types/type";
 
 const initialState: AuthState = {
   session: "",

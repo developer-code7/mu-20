@@ -1,23 +1,13 @@
 // redux/features/challenges/challengesSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fetchChallengeById, fetchUserChallenges } from "./challengesActions";
-
-interface Challenge {
-  challenge_id: string;
-  challenge_name: string;
-  challenge_type: string;
-  start_data: string;
-  end_date: string;
-  is_active: boolean;
-  team_size: number;
-  already_registered: string;
-  time_conflict: string;
-}
+import { Challenge } from "../../../types/type";
+import { ChallengeRegistration } from "../../../types/type";
 interface ChallengesState {
   challenges: Challenge[];
   userChallenges: {
-    activeChallenges: string[];
-    unactiveChallenges: string[];
+    activeChallenges: ChallengeRegistration[];
+    unactiveChallenges: ChallengeRegistration[];
   };
   selectedChallenge: Challenge | null;
   loading: boolean;
@@ -64,7 +54,6 @@ const challengesSlice = createSlice({
       .addCase(fetchChallengeById.fulfilled, (state, action) => {
         state.loading = false;
         state.selectedChallenge = action.payload;
-        console.log("slice", state.selectedChallenge);
       })
       .addCase(fetchChallengeById.rejected, (state, action) => {
         state.loading = false;
@@ -78,10 +67,12 @@ const challengesSlice = createSlice({
         state.userChallenges.activeChallenges = action.payload.activeChallenges;
         state.userChallenges.unactiveChallenges =
           action.payload.unactiveChallenges;
+
+        console.log(state.userChallenges.activeChallenges);
       })
       .addCase(fetchUserChallenges.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string; // Store the error if the fetch fails
+        state.error = action.payload as string; 
       });
   },
 });

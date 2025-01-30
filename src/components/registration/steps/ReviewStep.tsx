@@ -1,5 +1,5 @@
 import React from "react";
-
+import { User } from "../../../types/type";
 interface ReviewStepProps {
   formData: {
     challenge: {
@@ -9,18 +9,16 @@ interface ReviewStepProps {
     committee_preferences: {
       [key: string]: {
         committee_name: string;
-        portfolio_preferences: { id: string; name: string }[];
+        portfolio_preferences: {
+          portfolio_id: string;
+          portfolio_name: string;
+        }[];
       };
     };
     team_name: string;
-    team_members: { id: string; name: string }[];
+    team_members: { user_id: string; full_name: string }[];
   };
-  user: {
-    user_id: string;
-    fullName: string;
-    school_id: string;
-    email: string;
-  };
+  user: User | null;
 }
 
 const ReviewStep: React.FC<ReviewStepProps> = ({ formData, user }) => {

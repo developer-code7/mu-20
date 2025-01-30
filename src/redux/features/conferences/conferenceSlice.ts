@@ -1,22 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { fetchConferences } from "./conferencesActions";
-
-interface Conference {
-  conference_id: string;
-  conference_name: string;
-  start_date: string;
-  end_date: string;
-  location: string;
-  description: string;
-}
+import { fetchConferenceById, fetchConferences } from "./conferencesActions";
+import { Conference } from "../../../types/type";
 
 interface ConferencesState {
   conferences: Conference[];
+  selectedConference: Conference | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: ConferencesState = {
+  selectedConference: null,
   conferences: [],
   loading: false,
   error: null,
@@ -43,6 +37,25 @@ const conferencesSlice = createSlice({
         fetchConferences.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
+          state.error = action.payload;
+        }
+      )
+      .addCase(fetchConferenceById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchConferenceById.fulfilled,
+        (state, action: PayloadAction<Conference>) => {
+          state.loading = false;
+          state.selectedConference = action.payload;
+        }
+      )
+      .addCase(
+        fetchConferenceById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.selectedConference = null;
           state.error = action.payload;
         }
       );

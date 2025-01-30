@@ -1,4 +1,3 @@
-import React from "react";
 import { User, Mail, School, Bell } from "lucide-react";
 
 const DashboardSettings = () => {

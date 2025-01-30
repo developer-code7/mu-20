@@ -10,7 +10,10 @@ import { supabase } from "../../../../supabase/supabase.client";
 
 export const fetchChallenges = createAsyncThunk(
   "challenges/fetchChallenges",
-  async (userId: string, { dispatch }) => {
+  async (
+    { conferenceId, userId }: { conferenceId: string; userId: string }, // Accepting an object payload
+    { dispatch }
+  ) => {
     dispatch(fetchChallengesStart());
 
     try {
@@ -19,12 +22,10 @@ export const fetchChallenges = createAsyncThunk(
 
       if (userChallengesError) throw new Error(userChallengesError.message);
 
-      // Fetch all challenges
-
-      console.log(userChallenges);
       const { data: allChallenges, error: allChallengesError } = await supabase
         .from("challenges")
-        .select("*");
+        .select("*")
+        .eq("conference_id", conferenceId);
 
       if (allChallengesError) throw new Error(allChallengesError.message);
 
@@ -67,8 +68,6 @@ export const fetchChallengeById = createAsyncThunk(
       if (error) {
         throw new Error(error.message);
       }
-      console.log("DATA", data);
-
       return data;
     } catch (error: any) {
       return rejectWithValue(error.message);
