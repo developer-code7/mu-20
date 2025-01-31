@@ -70,7 +70,7 @@ export const validateStep = (
       }
       break;
     case 3:
-      if (!formData.team_name.trim()) {
+      if (!formData.team_name.trim() && formData.challenge.team_size > 1) {
         return { field: "team_name", message: "Team name is required" };
       }
       if (

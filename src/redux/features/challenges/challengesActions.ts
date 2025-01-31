@@ -7,49 +7,57 @@ import {
 } from "./challengesSlice";
 
 import { supabase } from "../../../../supabase/supabase.client";
+import toast from "react-hot-toast";
 
 export const fetchChallenges = createAsyncThunk(
   "challenges/fetchChallenges",
   async (
-    { conferenceId, userId }: { conferenceId: string; userId: string }, // Accepting an object payload
+    { conferenceId, userId }: { conferenceId: string; userId: string },
     { dispatch }
   ) => {
     dispatch(fetchChallengesStart());
 
     try {
-      const { data: userChallenges, error: userChallengesError } =
-        await supabase.rpc("get_user_challenges", { user_input_id: userId });
+      if (!userId) {
+        toast.error("Something went wrong");
+        return;
+      }
+      const { data: userChallenges } = await supabase.rpc(
+        "get_user_challenges",
+        { user_input_id: userId }
+      );
 
-      if (userChallengesError) throw new Error(userChallengesError.message);
-
-      const { data: allChallenges, error: allChallengesError } = await supabase
+      const { data: allChallenges } = await supabase
         .from("challenges")
         .select("*")
-        .eq("conference_id", conferenceId);
+        .eq("conference_id", conferenceId)
+        .eq("is_active", true);
 
-      if (allChallengesError) throw new Error(allChallengesError.message);
+      let challenges = [];
+      if (allChallenges) {
+        challenges = allChallenges.map((challenge) => {
+          const alreadyRegistered = userChallenges?.some(
+            (userChallenge) =>
+              userChallenge.challenge_id === challenge.challenge_id
+          );
+          const timeConflict = userChallenges?.some(
+            (userChallenge) =>
+              challenge.start_date < userChallenge.end_date &&
+              challenge.end_date > userChallenge.start_date
+          );
 
-      const challenges = allChallenges.map((challenge) => {
-        const alreadyRegistered = userChallenges.some(
-          (userChallenge) =>
-            userChallenge.challenge_id === challenge.challenge_id
-        );
-        const timeConflict = userChallenges.some(
-          (userChallenge) =>
-            challenge.start_date < userChallenge.end_date &&
-            challenge.end_date > userChallenge.start_date
-        );
-
-        return {
-          ...challenge,
-          already_registered: alreadyRegistered,
-          time_conflict: timeConflict,
-        };
-      });
+          return {
+            ...challenge,
+            already_registered: alreadyRegistered,
+            time_conflict: timeConflict,
+          };
+        });
+      }
 
       // Dispatch the final data
       dispatch(fetchChallengesSuccess(challenges));
     } catch (err: any) {
+      toast.error(err.message);
       dispatch(fetchChallengesFailure(err.message));
     }
   }
@@ -66,6 +74,7 @@ export const fetchChallengeById = createAsyncThunk(
         .single();
 
       if (error) {
+        toast.error(error.message);
         throw new Error(error.message);
       }
       return data;
@@ -83,6 +92,10 @@ export const fetchUserChallenges = createAsyncThunk(
         user_id_input: userId,
       });
 
+      if (error) {
+        toast.error(error.message);
+        throw new Error(error.message);
+      }
       const activeChallenges = [];
       const unactiveChallenges = [];
 
@@ -95,7 +108,7 @@ export const fetchUserChallenges = createAsyncThunk(
       }
 
       return { activeChallenges, unactiveChallenges };
-    } catch (error) {
+    } catch (error: any) {
       return rejectWithValue(error.message);
     }
   }

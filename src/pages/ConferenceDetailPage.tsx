@@ -26,8 +26,8 @@ const ConferenceDetailPage: React.FC = () => {
 
   if (!loading && !selectedConference) {
     return (
-      <div className="min-h-screen bg-[#0F1729] p-8 text-white">
-        <div className="max-w-5xl mx-auto">
+      <div className="min-h-screen bg-[#0F1729] sm:p-8 p-4 text-white">
+        <div className="sm:max-w-5xl mx-auto">
           <h1>Conference not found</h1>
         </div>
       </div>
@@ -35,13 +35,13 @@ const ConferenceDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0F1729] p-8">
+    <div className="min-h-screen bg-[#0F1729] sm:p-8  ">
       {loading ? (
         <Skelleton />
       ) : (
         <>
           {selectedConference && (
-            <div className="max-w-5xl mx-auto">
+            <div className="sm:max-w-5xl mx-auto">
               <Link
                 to="/dashboard"
                 className="inline-flex items-center text-[#FF5722] hover:text-[#F4511E] mb-6"
@@ -50,19 +50,19 @@ const ConferenceDetailPage: React.FC = () => {
                 Back to Conferences
               </Link>
 
-              <div className="bg-[#1B2537] rounded-lg p-8">
-                <div className="flex justify-between items-start mb-6">
-                  <h1 className="text-white text-3xl font-bold">
+              <div className="bg-[#1B2537] rounded-lg sm:p-8 p-4">
+                <div className="flex justify-between items-start sm:mb-6 mb-4">
+                  <h1 className="text-white sm:text-3xl text-lg font-bold">
                     {selectedConference?.conference_name}
                   </h1>
                   <Calendar className="text-[#FF5722]" size={28} />
                 </div>
-                <div className="flex items-center mb-4">
-                  <div className="">
-                    <h2 className="text-[#FF5722] text-lg font-semibold mb-2">
+                <div className="flex sm:flex-row flex-col gap-2 sm:items-center mb-4">
+                  <div className="flex flex-col items-start">
+                    <h2 className="text-[#FF5722] sm:text-sm font-semibold sm:mb-2">
                       Start Date
                     </h2>
-                    <p className="text-white">
+                    <p className="text-white sm:text-lg text-sm">
                       {new Date(
                         selectedConference?.start_date
                       ).toLocaleDateString("en-US", {
@@ -72,21 +72,22 @@ const ConferenceDetailPage: React.FC = () => {
                       })}
                     </p>
                   </div>
-                  <div className="ml-10">
-                    <div className="flex flex-col items-center gap-2 text-white">
-                      <h2 className="text-[#FF5722] text-lg font-semibold">
-                        Location
-                      </h2>
-                      <span>{selectedConference.location}</span>
-                    </div>
+                  <div className="flex flex-col items-start  text-white">
+                    <h2 className="text-[#FF5722] sm:text-sm font-semibold sm:mb-2">
+                      {" "}
+                      Location
+                    </h2>
+                    <p className="text-white sm:text-lg text-sm">
+                      {selectedConference.location}
+                    </p>
                   </div>
                 </div>
 
                 <div>
-                  <h2 className="text-[#FF5722] text-lg font-semibold mb-2">
+                  <h2 className="text-[#FF5722] sm:text-lg font-semibold mb-2">
                     Description
                   </h2>
-                  <p className="text-gray-300 leading-relaxed">
+                  <p className="text-gray-300 text-sm leading-relaxed">
                     {selectedConference?.description}
                   </p>
                 </div>

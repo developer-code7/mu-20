@@ -24,7 +24,7 @@ const PasswordStep: React.FC<PasswordStepProps> = ({ password, onChange }) => {
           name="password"
           value={password}
           onChange={onChange}
-          className="block w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+          className=" outline-none block w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
           placeholder="Create a password"
           required
         />

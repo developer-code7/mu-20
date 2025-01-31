@@ -16,7 +16,7 @@ const EmailStep: React.FC<EmailStepProps> = ({ email, onChange }) => {
         name="email"
         value={email}
         onChange={onChange}
-        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+        className="outline-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
         placeholder="Enter your email"
         required
       />

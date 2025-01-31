@@ -5,6 +5,7 @@ import {
   fetchCommitteesFailure,
 } from "./committeesSlice";
 import { supabase } from "../../../../supabase/supabase.client"; // Adjust the path
+import toast from "react-hot-toast";
 
 export const fetchCommitteesByChallengeId = createAsyncThunk(
   "committees/fetchCommitteesByChallengeId",
@@ -17,10 +18,9 @@ export const fetchCommitteesByChallengeId = createAsyncThunk(
         { input_challenge_id: challengeId }
       );
 
-      if (error) throw new Error(error.message);
-
       dispatch(fetchCommitteesSuccess(committees || []));
     } catch (err: any) {
+      toast.error(err.message);
       dispatch(fetchCommitteesFailure(err.message));
     }
   }

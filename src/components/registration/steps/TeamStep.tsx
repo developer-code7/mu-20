@@ -5,10 +5,7 @@ import { RootState } from "../../../redux/store";
 import { fetchUsersBySchoolId } from "../../../redux/features/users/usersAction";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 
-interface TeamMembers {
-  user_id: string;
-  full_name: string;
-}
+
 interface TeamStepProps {
   schoolId: string | null;
   teamLeader: {
@@ -42,10 +39,15 @@ const TeamStep: React.FC<TeamStepProps> = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    if (schoolId) {
-      dispatch(fetchUsersBySchoolId(schoolId));
+    if (schoolId && selectedChallenge && selectedChallenge.team_size > 1) {
+      dispatch(
+        fetchUsersBySchoolId({
+          input_challenge_id: selectedChallenge.id,
+          input_school_id: schoolId,
+        })
+      );
     }
-  }, [dispatch, schoolId]);
+  }, [dispatch, schoolId, selectedChallenge]);
 
   useEffect(() => {
     setFilteredUsers(
@@ -79,6 +81,7 @@ const TeamStep: React.FC<TeamStepProps> = ({
       <div>
         <label className="text-lg block font-medium text-gray-700 mb-2">
           Team Name
+          <span>{selectedChallenge?.team_size === 1 ? " (Optional)" : ""}</span>
         </label>
         <input
           type="text"
@@ -91,16 +94,16 @@ const TeamStep: React.FC<TeamStepProps> = ({
         />
       </div>
 
-      {selectedChallenge?.team_size > 1 && (
+      {selectedChallenge && selectedChallenge?.team_size > 1 && (
         <div className="relative">
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             Select Team Members
           </h3>
-          <div className=" py-2 flex items-center border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500">
+          <div className=" py-2 flex items-center border border-gray-300 rounded-md shadow-sm  focus-within:border-orange-500">
             <input
               type="text"
               placeholder={`${dropdownOpen ? "Search" : "Select"} Team Members`}
-              className="w-full px-3 outline-none "
+              className="w-full px-3 outline-none focus:outline"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onFocus={() => setDropdownOpen(true)}

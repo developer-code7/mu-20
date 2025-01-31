@@ -20,27 +20,27 @@ const ChallengeCard = ({ challenge, handleClick }: ChallengeCardProps) => {
           : challenge.time_conflict
           ? "border-gray-500/30 ring-1 ring-gray-500/20"
           : "border-gray-700 hover:border-orange-600"
-      } p-6 hover:border-opacity-100 transition-all duration-300 flex flex-col h-full relative group`}
+      } sm:p-6 p-3 hover:border-opacity-100 transition-all duration-300 flex flex-col h-full relative group`}
     >
       <div className="flex items-start justify-between">
-        <h3 className="text-lg font-semibold text-white">
+        <h3 className="sm:text-lg font-semibold text-white">
           {challenge.challenge_name}
         </h3>
         <Calendar
-          className={`h-5 w-5 ${
+          className={`h-5 w-5  ${
             challenge.already_registered
               ? "text-green-500"
               : challenge.time_conflict
-              ? "text-gray-500"
+              ? "text-gray-500 "
               : "text-orange-500"
           }`}
         />
       </div>
 
-      <div className="mt-4 space-y-3 mb-6">
-        <div className="flex items-center text-sm text-gray-400">
-          <Clock className="h-4 w-4 mr-2" />
-          <span>{`Registration closes on ${formatDate(
+      <div className="sm:mt-4 mt-2 space-y-3 sm:mb-6 mb-3">
+        <div className="flex items-center sm:text-sm text-[10px] text-gray-400">
+          <Clock className="sm:h-4 sm:w-4 h-3 w-3 mr-2" />
+          <span className="">{`Registration closes on ${formatDate(
             challenge.start_date
           )} `}</span>
         </div>
@@ -56,7 +56,7 @@ const ChallengeCard = ({ challenge, handleClick }: ChallengeCardProps) => {
             )
           }
           disabled={challenge.already_registered || challenge.time_conflict}
-          className={`w-full py-2 px-4 rounded-lg transition-colors ${
+          className={`sm:text-lg text-sm w-full py-2 px-4 rounded-lg transition-colors ${
             challenge.already_registered
               ? "bg-green-500/20 text-green-500 cursor-not-allowed hover:bg-green-500/30"
               : challenge.time_conflict

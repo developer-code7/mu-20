@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, redirect } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import PasswordStep from "../components/registration/steps/PasswordStep";
 import EmailStep from "../components/registration/steps/EmailStep";
 import SchoolStep from "../components/registration/steps/SchoolStep";
@@ -22,26 +22,20 @@ const Register = () => {
   });
 
   const dispatch = useAppDispatch();
-
+  const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const userData = {
-        email: formData.email,
-        password: formData.password,
-        fullName: formData.fullname,
-        schoolId: formData.school_id,
-      };
+    const userData = {
+      email: formData.email,
+      password: formData.password,
+      fullName: formData.fullname,
+      schoolId: formData.school_id,
+    };
 
-      // Dispatch registerUser action
-      const response = await dispatch(registerUser(userData)).unwrap(); // Unwrap to handle the resolved response
-      console.log("User Registered Successfully:", response);
-
-      if (response) {
-        redirect("/login");
-      }
-    } catch (error) {
-      console.error("Registration Failed:", error);
+    // Dispatch registerUser action
+    const response = await dispatch(registerUser(userData)).unwrap();
+    if (response) {
+      navigate("/login");
     }
   };
 
@@ -55,6 +49,13 @@ const Register = () => {
       }
       return { ...prev, [name]: value };
     });
+  };
+
+  const handleSchoolSelect = (id: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      school_id: id,
+    }));
   };
 
   return (
@@ -75,10 +76,7 @@ const Register = () => {
             password={formData.password}
             onChange={handleInputChange}
           />
-          <SchoolStep
-            schoolId={formData.school_id}
-            onChange={handleInputChange}
-          />
+          <SchoolStep onChange={handleSchoolSelect} />
           <button
             type="submit"
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"

@@ -5,6 +5,8 @@ import YourChallenges from "../components/dashboard/YourChallenges";
 import DashboardSettings from "../components/dashboard/DashboardSettings";
 import ConferencesPage from "./ConferencePage";
 import ConferenceDetailPage from "./ConferenceDetailPage";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { logoutUser } from "../redux/features/auth/authAction";
 
 const Dashboard = () => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -35,16 +37,19 @@ const Dashboard = () => {
     };
   }, []);
 
+  const dispatch = useAppDispatch();
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-gray-900 w-auto">
       {/* Navbar */}
       <nav className="bg-gray-800 fixed w-full z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="sm:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <div className="flex items-center">
-                <Layout className="h-8 w-8 text-orange-500" />
-                <span className="ml-2 text-2xl font-bold text-white">MU20</span>
+                <Layout className="sm:h-8 sm:w-8 h-6 w-6 text-orange-500" />
+                <span className="ml-2 sm:text-2xl text:xl font-bold text-white">
+                  MU20
+                </span>
               </div>
             </div>
 
@@ -54,11 +59,11 @@ const Dashboard = () => {
                   onClick={() => setNotificationsOpen(!notificationsOpen)}
                   className="p-2 rounded-full text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none"
                 >
-                  <Bell className="h-6 w-6" />
+                  <Bell className="sm:h-6 sm:w-6 h-5 w-5" />
                   <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-orange-500"></span>
                 </button>
                 {notificationsOpen && (
-                  <div className="absolute right-0 mt-2 w-80 bg-gray-800 rounded-lg shadow-lg py-2 z-20 border border-gray-700">
+                  <div className="absolute right-0 mt-2 sm:w-80 w-auto bg-gray-800 rounded-lg shadow-lg py-2 z-20 border border-gray-700">
                     <div className="px-4 py-2 border-b border-gray-700">
                       <h3 className="text-sm font-semibold text-white">
                         Notifications
@@ -81,7 +86,7 @@ const Dashboard = () => {
                   onClick={() => setProfileOpen(!profileOpen)}
                   className="flex items-center space-x-2 p-2 rounded-full text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none"
                 >
-                  <User className="h-6 w-6" />
+                  <User className="sm:h-6 sm:w-6 h-5 w-5" />
                 </button>
                 {profileOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg py-2 z-20 border border-gray-700">
@@ -93,9 +98,7 @@ const Dashboard = () => {
                     </Link>
                     <button
                       className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
-                      onClick={() => {
-                        /* Add logout logic */
-                      }}
+                      onClick={() => dispatch(logoutUser())}
                     >
                       Sign out
                     </button>

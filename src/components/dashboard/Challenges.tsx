@@ -30,9 +30,10 @@ const Challenges: React.FC<ChallengesProps> = ({ conferenceId }) => {
     if (user && conferenceId)
       dispatch(fetchChallenges({ conferenceId, userId: user.id }));
   }, [conferenceId, user, dispatch]);
+
   return (
-    <div className="space-y-6 mt-10">
-      <h1 className="text-2xl font-bold text-white">Challenges</h1>
+    <div className="sm:space-y-6 space-y-4 sm:mt-10 mt-5">
+      <h1 className="sm:text-2xl text-xl font-bold text-white">Challenges</h1>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {loading ? (

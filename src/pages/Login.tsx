@@ -7,23 +7,18 @@ import { loginUser } from "../redux/features/auth/authAction";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await dispatch(loginUser({ email, password })).unwrap();
 
-      navigate("/dashboard");
-    } catch (err: any) {
-      setError(err);
-      console.error("Login failed:", err);
-    }
+    await dispatch(loginUser({ email, password })).unwrap();
+
+    navigate("/dashboard");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 ">
       <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">MU20</h1>
@@ -31,8 +26,6 @@ const Login = () => {
             Welcome back! Please login to continue.
           </p>
         </div>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -46,9 +39,10 @@ const Login = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+                className="outline-none focus:outline-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus-within:ring-orange-500 focus-within:border-orange-500"
                 placeholder="Enter your email"
                 required
+                autoComplete="email"
               />
             </div>
           </div>
@@ -65,7 +59,7 @@ const Login = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+                className="outline-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus-within:ring-orange-500 focus-within:border-orange-500"
                 placeholder="Enter your password"
                 required
               />

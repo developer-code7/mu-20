@@ -12,6 +12,7 @@ import { registerForChallenge } from "../utils/registerForChallenge";
 import { useDispatch } from "react-redux";
 import { fetchChallengeById } from "../redux/features/challenges/challengesActions";
 import { ArrowLeft } from "lucide-react";
+import toast from "react-hot-toast";
 interface ChallengeRegisterationProps {
   openModal: () => void;
   handleLoading: (val: boolean) => void;
@@ -50,7 +51,6 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
     team_name: "",
     team_members: [],
   });
-
   useEffect(() => {
     const fetchData = async () => {
       if (id) {
@@ -212,8 +212,11 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
         openModal();
         navigate("/dashboard");
         handleLoading(false);
+        toast.success(
+          `Successfully Registered for ${formData.challenge?.name}`
+        );
       })
-      .catch((error) => console.log(error));
+      .catch((error) => toast.error(error.message || "Something went wrong"));
 
     handleLoading(true);
   };

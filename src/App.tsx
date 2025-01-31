@@ -10,7 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
 import CongratulationsModal from "./components/CongratulationsModal";
 import Loader from "./components/Loader";
-
+import { Toaster } from "react-hot-toast";
 function App() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -19,6 +19,7 @@ function App() {
     const fetchUserSession = async () => {
       const {
         data: { session },
+        error,
       } = await supabase.auth.getSession();
 
       if (session) {
@@ -38,11 +39,13 @@ function App() {
               schoolId: userData.school_id,
             })
           );
+
           navigate("/dashboard");
         }
       } else {
         dispatch(clearAuthState());
         navigate("/login");
+        throw new Error(error?.message);
       }
     };
 
@@ -87,6 +90,20 @@ function App() {
           }
         />
       </Routes>
+
+      <Toaster
+        reverseOrder={true}
+        position="top-right"
+        toastOptions={{
+          error: {
+            style: { borderRadius: "0", color: "red" },
+          },
+          success: {
+            style: { borderRadius: "0", color: "green" },
+          },
+          duration: 2000,
+        }}
+      />
     </div>
   );
 }

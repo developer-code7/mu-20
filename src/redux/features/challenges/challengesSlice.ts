@@ -1,8 +1,7 @@
 // redux/features/challenges/challengesSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fetchChallengeById, fetchUserChallenges } from "./challengesActions";
-import { Challenge } from "../../../types/type";
-import { ChallengeRegistration } from "../../../types/type";
+import { Challenge , ChallengeRegistration } from "../../../types/type";
 interface ChallengesState {
   challenges: Challenge[];
   userChallenges: {
@@ -67,12 +66,12 @@ const challengesSlice = createSlice({
         state.userChallenges.activeChallenges = action.payload.activeChallenges;
         state.userChallenges.unactiveChallenges =
           action.payload.unactiveChallenges;
-
-        console.log(state.userChallenges.activeChallenges);
       })
       .addCase(fetchUserChallenges.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string; 
+        state.userChallenges.activeChallenges = [];
+        state.userChallenges.unactiveChallenges = [];
+        state.error = action.payload as string;
       });
   },
 });

@@ -1,37 +1,58 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../../../../supabase/supabase.client"; // Ensure you have the client setup
-import { setAuthUser } from "./authSlice";
+import toast from "react-hot-toast";
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (
     { email, password }: { email: string; password: string },
-    { dispatch, rejectWithValue }
+    { rejectWithValue }
   ) => {
     try {
-      // 1. Log in the user with Supabase Auth
-      const { data: authData, error: authError } =
+      const { data: authData, error: signInError } =
         await supabase.auth.signInWithPassword({
           email,
           password,
         });
-      console.log("authdata", authData);
-      if (authError) {
-        throw new Error(authError.message);
+
+      if (signInError) {
+        toast.error(signInError.message);
+        throw new Error(signInError.message);
       }
 
-      // 2. Fetch user details from the 'users' table
-      const { data: userData, error: dbError } = await supabase
+      const { data: userData, error: userError } = await supabase
         .from("users")
         .select("*")
         .eq("auth_id", authData.user?.id)
         .single();
 
-      if (dbError) {
-        throw new Error(dbError.message);
+      if (userError) {
+        toast.error(userError.message);
+        throw new Error(userError.message);
       }
-      return userData; // Return user data for potential chaining
+      toast.success("Logged In Successfully!!");
+      return {
+        email: userData?.email,
+        fullName: userData?.full_name,
+        schoolId: userData?.school_id,
+        id: userData?.user_id,
+      }; // Return user data for potential chaining
     } catch (error: any) {
+      toast.error(error?.message);
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const logoutUser = createAsyncThunk(
+  "auth/logoutUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      await supabase.auth.signOut();
+
+      toast.success("Logged Out Successfully!!");
+    } catch (error: any) {
+      toast.error(error.message);
       return rejectWithValue(error.message);
     }
   }
@@ -51,19 +72,17 @@ export const registerUser = createAsyncThunk(
     schoolId: string;
   }) => {
     try {
-      // 1. Create user in Supabase Auth
-      const { data: user, error: authError } = await supabase.auth.signUp({
+      const { data: user, error: SignUpError } = await supabase.auth.signUp({
         email,
         password,
       });
 
-      if (authError) {
-        console.log("auth-error");
-        throw new Error(authError.message);
+      if (SignUpError) {
+        toast.error(SignUpError.message);
+        throw new Error(SignUpError.message);
       }
 
-      // 2. Save additional user metadata to "users" table
-      const { error: dbError } = await supabase.from("users").insert({
+      const { error: userError } = await supabase.from("users").insert({
         auth_id: user?.user?.id,
         email,
         password,
@@ -71,11 +90,13 @@ export const registerUser = createAsyncThunk(
         school_id: schoolId,
       });
 
-      if (dbError) {
-        throw new Error(dbError.message);
+      if (userError) {
+        toast.error(userError.message);
+        throw new Error(userError.message);
       }
 
-      return user?.user;
+      toast.success("Registraion Successfull, Login Please!!");
+      return user;
     } catch (err: any) {
       throw new Error(err.message || "Registration failed");
     }

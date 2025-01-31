@@ -24,7 +24,6 @@ const committeesSlice = createSlice({
     fetchCommitteesSuccess(state, action: PayloadAction<Committee[]>) {
       state.loading = false;
       state.committees = action.payload;
-      console.log(state.committees);
     },
     fetchCommitteesFailure(state, action: PayloadAction<string>) {
       state.loading = false;
