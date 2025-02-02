@@ -22,6 +22,7 @@ interface FormData {
     id: string;
     name: string;
     team_size: number;
+    has_committee: boolean;
   } | null;
   committee_preferences: {
     [key: string]: {
@@ -62,6 +63,7 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
               id: response.challenge_id,
               name: response.challenge_name,
               team_size: response.team_size,
+              has_committee: response.has_committee,
             },
           }));
         }
@@ -84,11 +86,12 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
     id: string;
     name: string;
     team_size: number;
+    has_committee: boolean;
   }) => {
     setFormData((prev) => ({
       ...prev,
       challenge,
-      committee_preferences: {}, // Reset committee preferences when challenge changes
+      committee_preferences: {},
       team_members: [],
     }));
     setError(null);
@@ -155,7 +158,7 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
     });
     setError(null);
   };
-
+  console.log(formData.challenge);
   const handleNext = () => {
     const validationError = validateStep(step, formData);
 
