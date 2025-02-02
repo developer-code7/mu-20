@@ -11,6 +11,7 @@ interface FormData {
     challenge: {
       id: string;
       name: string;
+      has_committee: boolean
     };
     committee_preference: {
       committee_id: string;
@@ -146,11 +147,14 @@ export const registerForChallenge = async (formData: FormData) => {
     const teamId = await createTeam();
     await addTeamMembers(teamId);
     const registration = await createRegistration(teamId);
-    const committeePortfolioIds = await fetchCommitteePortfolioIds();
-    await addTeamPreferences(
-      registration.registration_id,
-      committeePortfolioIds
-    );
+
+    if (formData.selected_challenge.challenge.has_committee) {
+      const committeePortfolioIds = await fetchCommitteePortfolioIds();
+      await addTeamPreferences(
+        registration.registration_id,
+        committeePortfolioIds
+      );
+    }
 
     console.log("Registration process completed successfully.", registration);
   } catch (error) {

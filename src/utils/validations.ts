@@ -50,7 +50,7 @@ export const validateStep = (
       }
       break;
     case 2:
-      if (Object.keys(formData.committee_preferences).length === 0) {
+      if (formData.challenge.has_committee === true && Object.keys(formData.committee_preferences).length === 0) {
         return {
           field: "committee_preferences",
           message: "Please select at least one committee",
@@ -79,9 +79,8 @@ export const validateStep = (
       ) {
         return {
           field: "team_members",
-          message: `Please select ${
-            formData.challenge.team_size - 1 - formData.team_members.length
-          }  more team member`,
+          message: `Please select ${formData.challenge.team_size - 1 - formData.team_members.length
+            }  more team member`,
         };
       }
       break;

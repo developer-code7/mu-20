@@ -8,11 +8,17 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { Challenge } from "../../../types/type";
 
 interface ChallengeStepProps {
-  selectedChallenge: { id: string; name: string; team_size: number } | null;
+  selectedChallenge: {
+    id: string;
+    name: string;
+    team_size: number;
+    has_committee: boolean;
+  } | null;
   onChallengeSelect: (challenge: {
     id: string;
     name: string;
     team_size: number;
+    has_committee: boolean;
   }) => void;
 }
 
@@ -75,6 +81,7 @@ const ChallengeStep: React.FC<ChallengeStepProps> = ({
       id: challenge.challenge_id,
       name: challenge.challenge_name,
       team_size: challenge.team_size,
+      has_committee: challenge.has_committee,
     });
     setDropdownOpen(false);
   };

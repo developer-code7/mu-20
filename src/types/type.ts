@@ -15,6 +15,7 @@ export interface Challenge {
   team_size: number;
   already_registered: boolean;
   time_conflict: boolean;
+  has_committee: boolean
 }
 
 export interface Portfolio {
