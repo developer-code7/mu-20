@@ -73,6 +73,32 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
     fetchData();
   }, [id, dispatch]);
 
+  const getAvailableSteps = (): number[] => {
+    const steps: number[] = [];
+    steps.push(1); // Challenge selection is always available
+
+    if (formData.challenge && formData.challenge.has_committee) {
+      steps.push(2); // Only show committee step if the challenge has committees
+    }
+
+    if (
+      formData.challenge &&
+      formData.challenge.team_size &&
+      formData.challenge.team_size > 1
+    ) {
+      steps.push(3); // Only show team members step if team size is more than 1 (i.e. team participation allowed)
+    }
+
+    steps.push(4); // Review step is always available
+
+    return steps;
+  };
+
+  const [availableSteps, setAvailableSteps] = useState(getAvailableSteps());
+
+  useEffect(() => {
+    setAvailableSteps(getAvailableSteps());
+  }, [formData.challenge]);
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -149,16 +175,32 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
     full_name: string;
   }) => {
     setFormData((prev) => {
-      const newMembers = prev.team_members.find(
+      const isMemberAlreadyAdded = prev.team_members.some(
         (member) => member.user_id === user.user_id
-      )
-        ? prev.team_members.filter((member) => member.user_id !== user.user_id)
-        : [...prev.team_members, user];
+      );
+
+      const maxMembers = prev.challenge?.team_size
+        ? prev.challenge.team_size - 1
+        : 0;
+
+      if (!isMemberAlreadyAdded && prev.team_members.length >= maxMembers) {
+        setError({
+          field: "team_members",
+          message: `You can only add up to ${maxMembers} team members.`,
+        });
+        return prev; // Return the previous state without modifying it
+      }
+
+      const newMembers = isMemberAlreadyAdded
+        ? prev.team_members.filter((member) => member.user_id !== user.user_id) // Remove if exists
+        : [...prev.team_members, user]; // Add new member
+
       return { ...prev, team_members: newMembers };
     });
-    setError(null);
+
+    setError(null); // Clear error if no issues
   };
-  console.log(formData.challenge);
+
   const handleNext = () => {
     const validationError = validateStep(step, formData);
 
@@ -166,15 +208,17 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
       setError(validationError);
       return;
     }
-    if (step < TOTAL_STEPS) {
-      setStep(step + 1);
+    const currentIndex = availableSteps.indexOf(step);
+    if (currentIndex < availableSteps.length - 1) {
+      setStep(availableSteps[currentIndex + 1]);
       setError(null);
     }
   };
 
   const handleBack = () => {
-    if (step > 1) {
-      setStep(step - 1);
+    const currentIndex = availableSteps.indexOf(step);
+    if (currentIndex > 0) {
+      setStep(availableSteps[currentIndex - 1]);
       setError(null);
     }
   };
@@ -225,40 +269,43 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
   };
 
   const renderStep = () => {
-    switch (step) {
-      case 1:
-        return (
-          <ChallengeStep
-            id={user?.id}
-            selectedChallenge={formData.challenge}
-            onChallengeSelect={handleChallengeSelect}
-          />
-        );
-      case 2:
-        return (
-          <CommitteeStep
-            selectedChallenge={formData.challenge}
-            committeePreferences={formData.committee_preferences}
-            onCommitteeToggle={handleCommitteeToggle}
-            onPortfolioChange={handlePortfolioChange}
-          />
-        );
-      case 3:
-        return (
-          <TeamStep
-            schoolId={user?.schoolId}
-            teamLeader={user}
-            selectedChallenge={formData.challenge}
-            teamName={formData.team_name}
-            teamMembers={formData.team_members}
-            onChange={handleInputChange}
-            onTeamMemberToggle={handleTeamMemberToggle}
-          />
-        );
-      case 4:
-        return <ReviewStep formData={formData} user={user} />;
-      default:
-        return null;
+    // Instead of relying solely on 'step' (which might be a raw number),
+    // use availableSteps to determine what to render.
+    if (step === 1) {
+      return (
+        <ChallengeStep
+          id={user?.id}
+          selectedChallenge={formData.challenge}
+          onChallengeSelect={handleChallengeSelect}
+        />
+      );
+    } else if (step === 2) {
+      // Render the committee step if it’s in the availableSteps array.
+      // (If the challenge doesn't have committees, step 2 might not be available.)
+      return (
+        <CommitteeStep
+          selectedChallenge={formData.challenge}
+          committeePreferences={formData.committee_preferences}
+          onCommitteeToggle={handleCommitteeToggle}
+          onPortfolioChange={handlePortfolioChange}
+        />
+      );
+    } else if (step === 3) {
+      return (
+        <TeamStep
+          schoolId={user?.schoolId}
+          teamLeader={user}
+          selectedChallenge={formData.challenge}
+          teamName={formData.team_name}
+          teamMembers={formData.team_members}
+          onChange={handleInputChange}
+          onTeamMemberToggle={handleTeamMemberToggle}
+        />
+      );
+    } else if (step === 4) {
+      return <ReviewStep formData={formData} user={user} />;
+    } else {
+      return null;
     }
   };
   const { conferenceId } = useParams();
@@ -272,23 +319,28 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
         Back to Conferences
       </Link>
 
-      <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
-        <StepIndicator currentStep={step} totalSteps={TOTAL_STEPS} />
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {renderStep()}
-
-          <NavigationButtons
-            currentStep={step}
-            totalSteps={TOTAL_STEPS}
-            onBack={handleBack}
-            onNext={handleNext}
-            isLastStep={step === TOTAL_STEPS}
-            error={error}
-            handleClick={handleSubmit}
+      {availableSteps.length > 0 && (
+        <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+          <StepIndicator
+            currentStep={availableSteps.indexOf(step) + 1}
+            totalSteps={availableSteps.length}
           />
-        </form>
-      </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {renderStep()}
+
+            <NavigationButtons
+              currentStep={step}
+              totalSteps={TOTAL_STEPS}
+              onBack={handleBack}
+              onNext={handleNext}
+              isLastStep={step === TOTAL_STEPS}
+              error={error}
+              handleClick={handleSubmit}
+            />
+          </form>
+        </div>
+      )}
     </div>
   );
 };

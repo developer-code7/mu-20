@@ -4,6 +4,8 @@ import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchUserChallenges } from "../../redux/features/challenges/challengesActions";
 import Skelleton from "./Skelleton";
 import UserChallengeCard from "./UserChallengeCard";
+import ChallengeDetailModal from "../ChallengeDetailModal";
+import { ChallengeRegistration } from "../../types/type";
 
 const YourChallenges = () => {
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
@@ -12,14 +14,32 @@ const YourChallenges = () => {
   );
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+
+  // State for selected challenge
+  const [selectedChallenge, setSelectedChallenge] =
+    useState<ChallengeRegistration | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
   useEffect(() => {
     if (user) {
       dispatch(fetchUserChallenges(user.id));
     }
   }, [user, dispatch]);
 
+  // Function to open modal
+  const handleViewDetails = (challenge: ChallengeRegistration) => {
+    setSelectedChallenge(challenge);
+    setIsDetailModalOpen(true);
+  };
+
+  // Function to close modal
+  const closeModal = () => {
+    setIsDetailModalOpen(false);
+    setSelectedChallenge(null);
+  };
+
   return (
-    <div className="min-h-screen space-y-6">
+    <div className="min-h-screen space-y-6 relative">
       <div className="flex sm:flex-row flex-col items-start gap-2 sm:justify-between sm:items-center">
         <h1 className="sm:text-2xl text-xl font-bold text-white">
           Your Challenges
@@ -65,6 +85,7 @@ const YourChallenges = () => {
                       challenge={challenge}
                       activeTab={activeTab}
                       key={challenge?.registration_details?.challenge_id}
+                      onViewDetails={handleViewDetails} // Pass function to the card
                     />
                   ))
                 )}
@@ -84,6 +105,7 @@ const YourChallenges = () => {
                     challenge={challenge}
                     activeTab={activeTab}
                     key={challenge?.registration_details?.challenge_id}
+                    onViewDetails={handleViewDetails} // Pass function to the card
                   />
                 ))}
               </div>
@@ -91,6 +113,14 @@ const YourChallenges = () => {
           </>
         )}
       </div>
+
+      {/* Render modal when a challenge is selected */}
+      {isDetailModalOpen && selectedChallenge && (
+        <ChallengeDetailModal
+          userChallenge={selectedChallenge}
+          onClose={closeModal} // Pass close function
+        />
+      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { ValidationError } from "../../utils/validations";
+import toast from "react-hot-toast";
 
 interface NavigationButtonsProps {
   currentStep: number;
@@ -20,13 +21,13 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   error,
   handleClick,
 }) => {
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message);
+    }
+  }, [error]);
   return (
     <div className="space-y-4">
-      {error && (
-        <p className="text-sm text-red-600 bg-red-50 p-2 rounded">
-          {error.message}
-        </p>
-      )}
       <div className="flex justify-between pt-4">
         {currentStep > 1 && (
           <button

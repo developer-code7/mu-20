@@ -47,10 +47,10 @@ const CommitteeStep: React.FC<CommitteeStepProps> = ({
       <h3 className="text-lg font-medium text-gray-900">
         Committee Preferences for {selectedChallenge.name}
       </h3>
-      {loading && <div>Loading committees...</div>}
-
-      {!loading && committees.length === 0 ? (
-        <div>No committees available for this challenge.</div>
+      {loading ? (
+        <div>Loading committees...</div>
+      ) : committees.length === 0 ? (
+        <div>{`No committees available for this challenge (Go to next step).`}</div>
       ) : (
         committees.map((committee) => (
           <div

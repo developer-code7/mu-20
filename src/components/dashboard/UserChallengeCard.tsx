@@ -5,10 +5,12 @@ import { formatDate } from "../../utils/formateDate";
 interface UserChallengeCardProps {
   challenge: ChallengeRegistration;
   activeTab: string;
+  onViewDetails: (challenge: ChallengeRegistration) => void;
 }
 const UserChallengeCard: React.FC<UserChallengeCardProps> = ({
   challenge,
   activeTab,
+  onViewDetails,
 }) => {
   return (
     <div
@@ -59,7 +61,10 @@ const UserChallengeCard: React.FC<UserChallengeCardProps> = ({
         </div>
       </div>
       <div className="flex items-center gap-2 sm:mt-4 mt-2 text-orange-500 hover:text-orange-400">
-        <button className="text-orange-500 hover:text-orange-400 sm:text-sm text-[12px] font-medium">
+        <button
+          className="text-orange-500 hover:text-orange-400 sm:text-sm text-[12px] font-medium"
+          onClick={() => onViewDetails(challenge)}
+        >
           {activeTab === "upcoming" ? "View Details" : "View Results"}
         </button>
         <MoveRight className="sm:h-6 sm:w-6 h-4 w-4 sm:mt-1" />

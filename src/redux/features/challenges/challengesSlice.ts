@@ -53,7 +53,6 @@ const challengesSlice = createSlice({
       .addCase(fetchChallengeById.fulfilled, (state, action) => {
         state.loading = false;
         state.selectedChallenge = action.payload;
-        console.log(state.selectedChallenge)
       })
       .addCase(fetchChallengeById.rejected, (state, action) => {
         state.loading = false;
