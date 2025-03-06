@@ -1,21 +1,23 @@
 export interface User {
   id: string;
   email: string;
-  fullName: string;
-  schoolId: string;
+  full_name: string;
+  school_id: string;
+  class: number;
+  contact: string;
 }
 
 export interface Challenge {
-  challenge_id: string;
-  challenge_name: string;
-  challenge_type: string;
+  id: string;
+  name: string;
+  type: string;
   start_date: string;
   end_date: string;
   is_active: boolean;
   team_size: number;
   already_registered: boolean;
   time_conflict: boolean;
-  has_committee: boolean
+  has_committees: boolean;
 }
 
 export interface Portfolio {
@@ -33,17 +35,18 @@ export interface Committee {
 }
 
 export interface Conference {
-  conference_id: string;
-  conference_name: string;
+  id: string;
+  name: string;
   start_date: string;
   end_date: string;
   location: string;
+  image_url: string;
   description: string;
 }
 
 export interface School {
-  school_name: string;
-  school_id: string;
+  name: string;
+  id: string;
 }
 export interface AuthState {
   session: string | null;

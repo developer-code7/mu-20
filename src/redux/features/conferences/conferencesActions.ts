@@ -1,40 +1,29 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { supabase } from "../../../../supabase/supabase.client";
 import toast from "react-hot-toast";
+import axiosInstance from "../../../helper/axiosInstance";
 
-// Fetch all conferences from the database
 export const fetchConferences = createAsyncThunk(
   "conferences/fetchConferences",
-  async (_, { rejectWithValue }) => {
+  async () => {
     try {
-      const { data, error } = await supabase.from("conferences").select("*");
+      const response = await axiosInstance.get("/conferences");
 
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      return data;
-    } catch (err: any) {
-      toast.error(err.message);
-      return rejectWithValue(err.message);
+      return response.data.data;
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Something went wrong");
     }
   }
 );
 
 export const fetchConferenceById = createAsyncThunk(
   "conferences/fetchConferenceById",
-  async (conferenceId: string, { rejectWithValue }) => {
+  async (id: string) => {
     try {
-      const { data, error } = await supabase
-        .from("conferences")
-        .select("*")
-        .eq("conference_id", conferenceId)
-        .single(); // Ensure only one record is returned
+      const response = await axiosInstance.get(`/conferences/${id}`);
 
-      return data;
-    } catch (err: any) {
-      toast.error(err.message);
-      return rejectWithValue(err.message);
+      return response.data.data;
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Something went wrong");
     }
   }
 );

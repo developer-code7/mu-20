@@ -1,27 +1,17 @@
 import React from "react";
 
-interface TextShimmerProps {
-  lines?: number;
-  width?: string;
-  className?: string;
-}
+type TextShimmerProps = {
+  lines: number | 1;
+};
 
-const TextShimmer: React.FC<TextShimmerProps> = ({
-  lines = 1,
-  width = "w-full",
-  className = "",
-}) => {
+const TextShimmer: React.FC<TextShimmerProps> = ({ lines }) => {
   return (
-    <div className={`space-y-2 ${className}`}>
-      {[...Array(lines)].map((_, i) => (
+    <div className="space-y-2">
+      {[...Array(lines)].map((_, index) => (
         <div
-          key={i}
-          className={`h-4 bg-gradient-to-r from-[#1B2537] via-[#2A3441] to-[#1B2537] rounded ${width} animate-shimmer`}
-          style={{
-            backgroundSize: "200% 100%",
-            animation: "shimmer 2s infinite linear",
-          }}
-        />
+          key={index}
+          className="h-6 w-full bg-gray-50 p-4 rounded-lg animate-pulse"
+        ></div>
       ))}
     </div>
   );

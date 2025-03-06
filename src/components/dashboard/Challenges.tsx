@@ -20,7 +20,7 @@ const Challenges: React.FC<ChallengesProps> = ({ conferenceId }) => {
     timeConflict: boolean
   ) => {
     if (alreadyRegistered || timeConflict) {
-      return; // Prevent click if already registered or time conflict
+      return;
     } else {
       navigate(`/conference/${conferenceId}/challenge-register/${id}`);
     }
@@ -29,11 +29,15 @@ const Challenges: React.FC<ChallengesProps> = ({ conferenceId }) => {
   useEffect(() => {
     if (user && conferenceId)
       dispatch(fetchChallenges({ conferenceId, userId: user.id }));
+
+    console.log(challenges);
   }, [conferenceId, user, dispatch]);
 
   return (
     <div className="sm:space-y-6 space-y-4 sm:mt-10 mt-5">
-      <h1 className="sm:text-2xl text-xl font-bold text-white">Challenges</h1>
+      <h1 className="sm:text-3xl text-xl font-bold text-white uppercase">
+        Challenges
+      </h1>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {loading ? (
@@ -43,11 +47,11 @@ const Challenges: React.FC<ChallengesProps> = ({ conferenceId }) => {
             <ChallengeCard
               challenge={challenge}
               handleClick={handleClick}
-              key={challenge.challenge_id}
+              key={challenge.id}
             />
           ))
         ) : (
-          <div className="bg-[#0F1729] p-8 text-white">
+          <div className=" p-8 text-white">
             <div className="max-w-5xl mx-auto">
               <h1>No Active Challenges Found</h1>
             </div>

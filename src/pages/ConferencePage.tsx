@@ -13,11 +13,11 @@ const ConferencesPage: React.FC = () => {
     dispatch(fetchConferences());
   }, []);
   return (
-    <div className="min-h-screen bg-[#0F1729] sm:p-8">
+    <div className="min-h-screen bg-[#000000] sm:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex sm:flex-row flex-col sm:items-center justify-between mb-8 ">
-          <h1 className="text-white sm:text-3xl text-xl font-bold">
-            Conferences
+          <h1 className="text-white sm:text-3xl text-xl font-bold uppercase">
+            Conference
           </h1>
           <div className="text-gray-400 sm:text-lg text-sm">
             Showing {conferences.length} conferences
@@ -31,7 +31,7 @@ const ConferencesPage: React.FC = () => {
           {!loading && conferences.length > 0
             ? conferences.map((conference) => (
                 <ConferenceCard
-                  key={conference.conference_id}
+                  key={conference.id}
                   conference={conference}
                 />
               ))

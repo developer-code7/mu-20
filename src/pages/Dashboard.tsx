@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Layout, Trophy, Award, Settings, Bell, User } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Trophy, Award, Settings, Bell, User } from "lucide-react";
 import { Link, Routes, Route, Navigate } from "react-router-dom";
 import YourChallenges from "../components/dashboard/YourChallenges";
 import DashboardSettings from "../components/dashboard/DashboardSettings";
@@ -7,7 +7,7 @@ import ConferencesPage from "./ConferencePage";
 import ConferenceDetailPage from "./ConferenceDetailPage";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { logoutUser } from "../redux/features/auth/authAction";
-
+import logo from "../../assets/logo.png";
 const Dashboard = () => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -39,21 +39,14 @@ const Dashboard = () => {
 
   const dispatch = useAppDispatch();
   return (
-    <div className="min-h-screen bg-gray-900 w-auto">
+    <div className="min-h-screen bg-[#000000] w-auto ">
       {/* Navbar */}
-      <nav className="bg-gray-800 fixed w-full z-10">
-        <div className="sm:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <div className="flex items-center">
-                <Layout className="sm:h-8 sm:w-8 h-6 w-6 text-orange-500" />
-                <span className="ml-2 sm:text-2xl text:xl font-bold text-white">
-                  MU20
-                </span>
-              </div>
-            </div>
+      <nav className="bg-[#222222] fixed w-full z-[999]">
+        <div className=" ">
+          <div className="flex p-4">
+            <img src={logo} alt="logo" className="w-32" />
 
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-4 ml-auto">
               <div className="relative" ref={notificationsRef}>
                 <button
                   onClick={() => setNotificationsOpen(!notificationsOpen)}
@@ -112,7 +105,7 @@ const Dashboard = () => {
 
       <div className="flex pt-16">
         {/* Sidebar */}
-        <aside className="fixed left-0 z-20 h-[calc(100vh-4rem)] bg-gray-800 transition-all duration-300 ease-in-out group hover:w-64 w-16">
+        <aside className="fixed left-0 z-[9999] h-[calc(100vh-4rem)] bg-[#222222] transition-all duration-300 ease-in-out group hover:w-64 w-16">
           <div className="h-full flex flex-col py-4">
             <nav className="flex-1">
               <div className="space-y-1">

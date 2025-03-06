@@ -28,8 +28,9 @@ const Register = () => {
     const userData = {
       email: formData.email,
       password: formData.password,
-      fullName: formData.fullname,
+      name: formData.fullname,
       schoolId: formData.school_id,
+      student_class: "12",
     };
 
     // Dispatch registerUser action

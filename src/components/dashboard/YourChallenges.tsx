@@ -26,13 +26,12 @@ const YourChallenges = () => {
     }
   }, [user, dispatch]);
 
-  // Function to open modal
+  
   const handleViewDetails = (challenge: ChallengeRegistration) => {
     setSelectedChallenge(challenge);
     setIsDetailModalOpen(true);
   };
 
-  // Function to close modal
   const closeModal = () => {
     setIsDetailModalOpen(false);
     setSelectedChallenge(null);
@@ -41,14 +40,14 @@ const YourChallenges = () => {
   return (
     <div className="min-h-screen space-y-6 relative">
       <div className="flex sm:flex-row flex-col items-start gap-2 sm:justify-between sm:items-center">
-        <h1 className="sm:text-2xl text-xl font-bold text-white">
+        <h1 className="sm:text-3xl text-xl font-bold text-white uppercase">
           Your Challenges
         </h1>
-        <div className="bg-gray-800 rounded-lg p-1">
+        <div className="bg-[#222222] rounded-lg p-1">
           <button
             className={`sm:px-4 sm:py-2 px-2 py-1 rounded-lg text-sm font-medium transition-colors ${
               activeTab === "upcoming"
-                ? "bg-gray-700 text-white"
+                ? "bg-[#535353] text-white"
                 : "text-gray-400 hover:text-white"
             }`}
             onClick={() => setActiveTab("upcoming")}
@@ -58,7 +57,7 @@ const YourChallenges = () => {
           <button
             className={`sm:px-4 sm:py-2 px-2 py-1 rounded-lg text-sm font-medium transition-colors ${
               activeTab === "past"
-                ? "bg-gray-700 text-white"
+                ? "bg-[#535353] text-white"
                 : "text-gray-400 hover:text-white"
             }`}
             onClick={() => setActiveTab("past")}
@@ -68,7 +67,7 @@ const YourChallenges = () => {
         </div>
       </div>
 
-      <div className="bg-gray-800 rounded-lg border border-gray-700 sm:p-6 p-4">
+      <div className="bg-[#222222] rounded-lg sm:p-6 p-4">
         {activeTab === "upcoming" ? (
           <div className="grid sm:gap-6 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {loading ? (
@@ -95,7 +94,7 @@ const YourChallenges = () => {
         ) : (
           <>
             {userChallenges.unactiveChallenges.length === 0 ? (
-              <div className="border text-white border-gray-700 rounded-lg sm:p-4 p-2 hover:border-orange-500 transition-colors">
+              <div className="text-white rounded-lg sm:p-4 p-2 hover:border-orange-500 transition-colors">
                 No Past Challenges Available
               </div>
             ) : (

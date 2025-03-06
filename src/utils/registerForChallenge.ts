@@ -1,4 +1,5 @@
-import { supabase } from "../../supabase/supabase.client";
+import toast from "react-hot-toast";
+import axiosInstance from "../helper/axiosInstance";
 
 interface FormData {
   user: {
@@ -11,7 +12,7 @@ interface FormData {
     challenge: {
       id: string;
       name: string;
-      has_committee: boolean
+      has_committees: boolean;
     };
     committee_preference: {
       committee_id: string;
@@ -35,18 +36,18 @@ export const registerForChallenge = async (formData: FormData) => {
   try {
     // Helper: Create team
     const createTeam = async () => {
-      const { data, error } = await supabase
-        .from("teams")
-        .insert({
+      try {
+        const response = await axiosInstance.post("/teams/create-team", {
           team_name: formData.team_details.team_name,
           challenge_id: formData.selected_challenge.challenge.id,
           school_id: formData.user.school_id,
-        })
-        .select("team_id")
-        .single();
+        });
 
-      if (error) throw new Error(`Failed to create team: ${error.message}`);
-      return data.team_id;
+        return response?.data.data;
+      } catch (error) {
+        toast.error(error?.response.data.error);
+        throw new Error(error?.response.data.error);
+      }
     };
 
     // Helper: Add team members
@@ -56,44 +57,78 @@ export const registerForChallenge = async (formData: FormData) => {
         user_id: formData.user.id,
         full_name: formData.user.fullname,
       });
-      const { error } = await supabase.from("team_members").insert(
-        team_members.map((member) => ({
-          team_id: teamId,
-          user_id: member.user_id,
-        }))
-      );
-
-      if (error)
-        throw new Error(`Failed to add team members: ${error.message}`);
+      try {
+        const response = await axiosInstance.post(
+          "/team-members/add-team-members",
+          {
+            team_id: teamId,
+            team_members,
+          }
+        );
+        return response?.data.data;
+      } catch (error) {
+        toast.error(error?.response.data.error);
+        throw new Error(error?.response.data.error);
+      }
     };
 
     // Helper: Create registration
     const createRegistration = async (teamId: string) => {
       const registrationData = {
-        user_id: formData.user.id,
         challenge_id: formData.selected_challenge.challenge.id,
         team_id: teamId,
-        registration_date: new Date().toISOString(),
-        status: true,
       };
 
-      // Insert into the "registration" table and return the full registration record
-      const { data, error } = await supabase
-        .from("registrations")
-        .insert(registrationData)
-        .select("*") // Fetch all columns from the inserted row
-        .single();
+      try {
+        const response = await axiosInstance.post(
+          "/registrations/register-challenge",
+          {
+            ...registrationData,
+          }
+        );
+        return response?.data.data;
+      } catch (error) {
+        toast.error(error?.response.data.error);
 
-      if (error) {
-        throw new Error(`Failed to complete registration: ${error.message}`);
+        throw new Error(error?.response.data.error);
       }
-
-      // Return the complete registration record
-      return data;
     };
 
     // Helper: Fetch committee portfolio IDs
-    const fetchCommitteePortfolioIds = async () => {
+    // const fetchCommitteePortfolioIds = async () => {
+    //   const preferences =
+    //     formData.selected_challenge.committee_preference.flatMap((committee) =>
+    //       committee.portfolio_preferences.map((portfolio) => ({
+    //         committee_id: committee.committee_id,
+    //         portfolio_id: portfolio.portfolio_id,
+    //       }))
+    //     );
+
+    //   const ids = [];
+    //   for (const preference of preferences) {
+    //     const { data, error } = await supabase
+    //       .from("committee_portfolio")
+    //       .select("committee_portfolio_id")
+    //       .eq("committee_id", preference.committee_id)
+    //       .eq("portfolio_id", preference.portfolio_id)
+    //       .single();
+
+    //     if (error) {
+    //       console.error(
+    //         `Error fetching committee_portfolio_id for committee_id: ${preference.committee_id} and portfolio_id: ${preference.portfolio_id}`,
+    //         error
+    //       );
+    //       throw error;
+    //     }
+
+    //     ids.push(data.committee_portfolio_id);
+    //   }
+
+    //   return ids;
+    // };
+
+    // Helper: Add team preferences
+    const addTeamPreferences = async (registrationId: string) => {
       const preferences =
         formData.selected_challenge.committee_preference.flatMap((committee) =>
           committee.portfolio_preferences.map((portfolio) => ({
@@ -102,58 +137,29 @@ export const registerForChallenge = async (formData: FormData) => {
           }))
         );
 
-      const ids = [];
-      for (const preference of preferences) {
-        const { data, error } = await supabase
-          .from("committee_portfolio")
-          .select("committee_portfolio_id")
-          .eq("committee_id", preference.committee_id)
-          .eq("portfolio_id", preference.portfolio_id)
-          .single();
+      try {
+        const response = await axiosInstance.post(
+          "/team-preferences/add-preferences",
+          {
+            registration_id: registrationId,
+            preferences,
+          }
+        );
+        return response?.data.data;
+      } catch (error) {
+        toast.error(error?.response.data.error);
 
-        if (error) {
-          console.error(
-            `Error fetching committee_portfolio_id for committee_id: ${preference.committee_id} and portfolio_id: ${preference.portfolio_id}`,
-            error
-          );
-          throw error;
-        }
-
-        ids.push(data.committee_portfolio_id);
+        throw new Error(error?.response.data.error);
       }
-
-      return ids;
-    };
-
-    // Helper: Add team preferences
-    const addTeamPreferences = async (
-      registrationId: string,
-      committeePortfolioIds: string[]
-    ) => {
-      const teamPreferences = committeePortfolioIds.map((id) => ({
-        registration_id: registrationId,
-        committee_portfolio_id: id,
-      }));
-
-      const { error } = await supabase
-        .from("team_preferences")
-        .insert(teamPreferences);
-
-      if (error)
-        throw new Error(`Failed to add team preferences: ${error.message}`);
     };
 
     // Main process
-    const teamId = await createTeam();
-    await addTeamMembers(teamId);
-    const registration = await createRegistration(teamId);
+    const data = await createTeam();
+    await addTeamMembers(data?.id);
+    const registration = await createRegistration(data?.id);
 
-    if (formData.selected_challenge.challenge.has_committee) {
-      const committeePortfolioIds = await fetchCommitteePortfolioIds();
-      await addTeamPreferences(
-        registration.registration_id,
-        committeePortfolioIds
-      );
+    if (formData.selected_challenge.challenge.has_committees) {
+      await addTeamPreferences(registration?.id);
     }
 
     console.log("Registration process completed successfully.", registration);

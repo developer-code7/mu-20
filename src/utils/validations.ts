@@ -50,7 +50,7 @@ export const validateStep = (
       }
       break;
     case 2:
-      if (formData.challenge.has_committee === true && Object.keys(formData.committee_preferences).length === 0) {
+      if (formData.challenge.has_committees === true && Object.keys(formData.committee_preferences).length === 0) {
         return {
           field: "committee_preferences",
           message: "Please select at least one committee",

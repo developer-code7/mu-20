@@ -13,8 +13,8 @@ const SchoolStep: React.FC<SchoolStepProps> = ({ onChange }) => {
   const dispatch = useAppDispatch();
   const { data: schools, loading } = useAppSelector((state) => state.schools);
   const [selectedSchool, setSelectedSchool] = useState<School>({
-    school_id: "",
-    school_name: "",
+    id: "",
+    name: "",
   });
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,7 +29,7 @@ const SchoolStep: React.FC<SchoolStepProps> = ({ onChange }) => {
   useEffect(() => {
     setFilteredSchools(
       schools.filter((school) =>
-        school.school_name.toLowerCase().includes(searchTerm.toLowerCase())
+        school.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
   }, [schools, searchTerm]);
@@ -52,8 +52,8 @@ const SchoolStep: React.FC<SchoolStepProps> = ({ onChange }) => {
   }, []);
 
   const handleSelectChallenge = (school: School) => {
-    setSelectedSchool(school); // Update state directly
-    onChange(school?.school_id); // Use the selected school's ID
+    setSelectedSchool(school);
+    onChange(school?.id);
   };
   return (
     <div className="relative" ref={dropdownRef}>
@@ -75,9 +75,7 @@ const SchoolStep: React.FC<SchoolStepProps> = ({ onChange }) => {
             className="w-full px-3 cursor-pointer"
             onClick={() => setDropdownOpen(true)}
           >
-            {selectedSchool?.school_name
-              ? selectedSchool?.school_name
-              : "Select Your School"}
+            {selectedSchool?.name ? selectedSchool?.name : "Select Your School"}
           </p>
         )}
         {dropdownOpen ? (
@@ -99,18 +97,18 @@ const SchoolStep: React.FC<SchoolStepProps> = ({ onChange }) => {
           ) : filteredSchools.length > 0 ? (
             filteredSchools.map((school) => (
               <li
-                key={school.school_id}
+                key={school.id}
                 className="px-3 py-2 cursor-pointer hover:bg-gray-200 "
                 onClick={() => {
                   setDropdownOpen(false);
                   handleSelectChallenge(school);
                 }}
               >
-                {school.school_name}
+                {school.name}
               </li>
             ))
           ) : (
-            <li className="px-3 py-2 text-gray-500">No Challenges Found</li>
+            <li className="px-3 py-2 text-gray-500">No Schools Found</li>
           )}
         </ul>
       )}

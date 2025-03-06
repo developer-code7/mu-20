@@ -1,55 +1,91 @@
 import React from "react";
-import { Calendar, Clock, ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatDate } from "../../utils/formateDate";
 import { Conference } from "../../types/type";
+import conference_image from "../../../assets/conference.png";
 interface ConferenceCardProps {
   conference: Conference;
 }
 
 const ConferenceCard: React.FC<ConferenceCardProps> = ({ conference }) => {
   return (
-    <div className="bg-[#1B2537] rounded-lg overflow-hidden group hover:shadow-xl transition-all duration-300  flex flex-col h-full">
-      <div className="sm:p-6 p-3 flex-1">
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex-1">
-            <div className="flex sm:flex-row gap-1 flex-col  sm:items-center  mb-2 sm:mb-4">
-              <div className="flex items-center gap-2 text-[#FF5722]">
-                <Calendar size={18} />
-                <span className="text-sm">
-                  {formatDate(conference.start_date)}
-                </span>
-              </div>
-              <div className="sm:ml-auto">
-                <div className="flex items-center gap-2 text-white">
-                  <MapPin size={18} className="text-[#FF5722] text-sm" />
-                  <span>{conference.location}</span>
-                </div>
-              </div>
-            </div>
-            <h3 className="text-white sm:text-xl  font-semibold leading-tight">
-              {conference.conference_name}
-            </h3>
+    <div className="relative w-full max-w-xs rounded-2xl overflow-hidden shadow-lg group">
+      {/* Background Image */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent z-10"></div>
+      <img
+        src={conference_image}
+        alt={conference.name}
+        className="w-full h-full object-cover absolute inset-0"
+      />
+
+      {/* Content Container */}
+      <div className="relative z-20 h-80 p-4 flex flex-col justify-end text-white">
+        {/* Date Badge */}
+        <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm px-2 py-1 rounded flex items-center space-x-1">
+          <div className="bg-teal-500 p-1 rounded">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
           </div>
-        </div>
-        <div className="flex items-center text-gray-400 sm:text-sm text-[10px]">
-          <Clock size={16} className="mr-2" />
-          <span>
-            Registration closes on {formatDate(conference.start_date)}{" "}
+          <span className="text-xs font-medium">
+            {formatDate(conference.start_date)}
           </span>
         </div>
-      </div>
 
-      <div className="border-t border-gray-700/50 mt-auto">
+        {/* Location Badge */}
+        <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm px-2 py-1 rounded flex items-center space-x-1">
+          <div className="bg-gray-800 p-1 rounded">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+          </div>
+          <span className="text-xs font-medium">{conference.location}</span>
+        </div>
+
+        {/* Title and Info */}
+        <h3 className="text-xl font-bold uppercase mb-1 leading-tight">
+          {conference.name}
+        </h3>
+        <p className="text-sm text-gray-300 mb-3">
+          Registration Closes on {formatDate(conference.start_date)}
+        </p>
+
+        {/* View Details Link */}
         <Link
-          to={`/dashboard/conference/${conference.conference_id}`}
-          className="flex items-center justify-between p-4 text-[#FF5722] hover:bg-[#FF5722] hover:text-white transition-all duration-300 group"
+          to={`/dashboard/conference/${conference.id}`}
+          className="flex items-center text-[#EA580C] text-sm font-medium group-hover:text-[#ea4f0c]  group-hover:font-bold transition-all"
         >
-          <span className="font-medium text-sm">View Details</span>
-          <ArrowRight
-            size={18}
-            className="transform group-hover:translate-x-1 transition-transform duration-300"
-          />
+          View Details
+          <ArrowRight className="ml-auto h-4 w-4 group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
     </div>

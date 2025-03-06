@@ -13,17 +13,14 @@ import { useDispatch } from "react-redux";
 import { fetchChallengeById } from "../redux/features/challenges/challengesActions";
 import { ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
+import { Challenge } from "../types/type";
+import art from "../../assets/Art.png";
 interface ChallengeRegisterationProps {
   openModal: () => void;
   handleLoading: (val: boolean) => void;
 }
 interface FormData {
-  challenge: {
-    id: string;
-    name: string;
-    team_size: number;
-    has_committee: boolean;
-  } | null;
+  challenge: Challenge | null;
   committee_preferences: {
     [key: string]: {
       committee_name: string;
@@ -59,12 +56,7 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
         if (response) {
           setFormData((prev) => ({
             ...prev,
-            challenge: {
-              id: response.challenge_id,
-              name: response.challenge_name,
-              team_size: response.team_size,
-              has_committee: response.has_committee,
-            },
+            challenge: response,
           }));
         }
       }
@@ -77,7 +69,7 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
     const steps: number[] = [];
     steps.push(1); // Challenge selection is always available
 
-    if (formData.challenge && formData.challenge.has_committee) {
+    if (formData.challenge && formData.challenge.has_committees) {
       steps.push(2); // Only show committee step if the challenge has committees
     }
 
@@ -112,7 +104,7 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
     id: string;
     name: string;
     team_size: number;
-    has_committee: boolean;
+    has_committees: boolean;
   }) => {
     setFormData((prev) => ({
       ...prev,
@@ -132,10 +124,14 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
       if (newPreferences[committeeId]) {
         delete newPreferences[committeeId];
       } else {
-        newPreferences[committeeId] = {
-          committee_name: committeeName,
-          portfolio_preferences: [],
-        };
+        if (Object.keys(newPreferences).length < 3) {
+          newPreferences[committeeId] = {
+            committee_name: committeeName,
+            portfolio_preferences: [],
+          };
+        } else {
+          toast.error("Cannont select more than three committees");
+        }
       }
       return { ...prev, committee_preferences: newPreferences };
     });
@@ -149,22 +145,30 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
   ) => {
     setFormData((prev) => {
       const newPreferences = { ...prev.committee_preferences };
-      const currentPortfolios =
-        newPreferences[committeeId]?.portfolio_preferences || [];
-      const portfolioIndex = currentPortfolios.findIndex(
-        (p) => p.portfolio_id === portfolio_id
-      );
+      // const currentPortfolios =
+      //   newPreferences[committeeId]?.portfolio_preferences || [];
+      // const portfolioIndex = currentPortfolios.findIndex(
+      //   (p) => p.portfolio_id === portfolio_id
+      // );
 
-      if (portfolioIndex === -1) {
-        currentPortfolios.push({ portfolio_id, portfolio_name });
-      } else {
-        currentPortfolios.splice(portfolioIndex, 1);
-      }
+      // if (portfolioIndex === -1) {
+      //   currentPortfolios.push({ portfolio_id, portfolio_name });
+      // } else {
+      //   currentPortfolios.splice(portfolioIndex, 1);
+      // }
+
+      // newPreferences[committeeId] = {
+      //   ...newPreferences[committeeId],
+      //   portfolio_preferences: currentPortfolios,
+      // };
 
       newPreferences[committeeId] = {
         ...newPreferences[committeeId],
-        portfolio_preferences: currentPortfolios,
+        portfolio_preferences: [{ portfolio_id, portfolio_name }],
       };
+
+      console.log(newPreferences);
+
       return { ...prev, committee_preferences: newPreferences };
     });
     setError(null);
@@ -293,7 +297,7 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
     } else if (step === 3) {
       return (
         <TeamStep
-          schoolId={user?.schoolId}
+          schoolId={user?.school_id}
           teamLeader={user}
           selectedChallenge={formData.challenge}
           teamName={formData.team_name}
@@ -310,37 +314,42 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
   };
   const { conferenceId } = useParams();
   return (
-    <div className=" min-h-screen flex flex-col  items-center justify-center p-4">
-      <Link
-        to={`/dashboard/conference/${conferenceId}`}
-        className="text-xl inline-flex items-center text-[#FF5722] hover:text-[#F4511E] mb-6"
-      >
-        <ArrowLeft size={22} className="mr-2" />
-        Back to Conferences
-      </Link>
+    <div className="grid md:grid-cols-2 grid-cols-1 gap-2">
+      <div className=" min-h-screen flex flex-col  items-center justify-center p-4">
+        <Link
+          to={`/dashboard/conference/${conferenceId}`}
+          className="text-xl inline-flex items-center text-[#FF5722] hover:text-[#F4511E] mb-6"
+        >
+          <ArrowLeft size={22} className="mr-2" />
+          Back to Conferences
+        </Link>
 
-      {availableSteps.length > 0 && (
-        <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
-          <StepIndicator
-            currentStep={availableSteps.indexOf(step) + 1}
-            totalSteps={availableSteps.length}
-          />
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {renderStep()}
-
-            <NavigationButtons
-              currentStep={step}
-              totalSteps={TOTAL_STEPS}
-              onBack={handleBack}
-              onNext={handleNext}
-              isLastStep={step === TOTAL_STEPS}
-              error={error}
-              handleClick={handleSubmit}
+        {availableSteps.length > 0 && (
+          <div className=" rounded-lg shadow-xl p-8 w-full max-w-md">
+            <StepIndicator
+              currentStep={availableSteps.indexOf(step) + 1}
+              totalSteps={availableSteps.length}
             />
-          </form>
-        </div>
-      )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {renderStep()}
+
+              <NavigationButtons
+                currentStep={step}
+                totalSteps={TOTAL_STEPS}
+                onBack={handleBack}
+                onNext={handleNext}
+                isLastStep={step === TOTAL_STEPS}
+                error={error}
+                handleClick={handleSubmit}
+              />
+            </form>
+          </div>
+        )}
+      </div>
+      <div className="hidden md:flex items-center ">
+        <img src={art} alt="image"className="max-h-[700px]" />
+      </div>
     </div>
   );
 };

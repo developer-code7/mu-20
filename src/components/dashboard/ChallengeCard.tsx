@@ -13,28 +13,30 @@ interface ChallengeCardProps {
 const ChallengeCard = ({ challenge, handleClick }: ChallengeCardProps) => {
   return (
     <div
-      key={challenge.challenge_id}
-      className={`bg-gray-800 rounded-lg border ${
+      key={challenge.id}
+      className={`bg-[#222222] rounded-lg  ${
         challenge.already_registered
-          ? "border-green-500/30 ring-1 ring-green-500/20"
+          ? "border border-green-500/30 ring-1 ring-green-500/20"
           : challenge.time_conflict
-          ? "border-gray-500/30 ring-1 ring-gray-500/20"
-          : "border-gray-700 hover:border-orange-600"
+          ? "border border-gray-500/30 ring-1 ring-gray-500/20"
+          : ""
       } sm:p-6 p-3 hover:border-opacity-100 transition-all duration-300 flex flex-col h-full relative group`}
     >
       <div className="flex items-start justify-between">
-        <h3 className="sm:text-lg font-semibold text-white">
-          {challenge.challenge_name}
+        <h3 className="sm:text-lg font-semibold text-white uppercase">
+          {challenge.name}
         </h3>
-        <Calendar
-          className={`h-5 w-5  ${
-            challenge.already_registered
-              ? "text-green-500"
-              : challenge.time_conflict
-              ? "text-gray-500 "
-              : "text-orange-500"
-          }`}
-        />
+        <div className="bg-white p-[2px] rounded-lg flex items-center">
+          <Calendar
+            className={`h-5 w-5  ${
+              challenge.already_registered
+                ? "text-green-500"
+                : challenge.time_conflict
+                ? "text-gray-500 "
+                : "text-orange-500"
+            }`}
+          />
+        </div>
       </div>
 
       <div className="sm:mt-4 mt-2 space-y-3 sm:mb-6 mb-3">
@@ -50,13 +52,13 @@ const ChallengeCard = ({ challenge, handleClick }: ChallengeCardProps) => {
         <button
           onClick={() =>
             handleClick(
-              challenge.challenge_id,
+              challenge.id,
               challenge.already_registered,
               challenge.time_conflict
             )
           }
           disabled={challenge.already_registered || challenge.time_conflict}
-          className={`sm:text-lg text-sm w-full py-2 px-4 rounded-lg transition-colors ${
+          className={`sm:text-lg text-sm font-bold w-full py-2 px-4 rounded-lg transition-colors ${
             challenge.already_registered
               ? "bg-green-500/20 text-green-500 cursor-not-allowed hover:bg-green-500/30"
               : challenge.time_conflict

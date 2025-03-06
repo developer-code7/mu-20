@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../supabase/supabase.client";
 import { useAppDispatch } from "./hooks/useAppDispatch";
-import { setAuthUser, clearAuthState } from "./redux/features/auth/authSlice";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Login from "./pages/Login";
 import ChallengeRegisteration from "./pages/ChallengeRegisteration";
@@ -11,46 +9,22 @@ import PrivateRoute from "./components/PrivateRoute";
 import CongratulationsModal from "./components/CongratulationsModal";
 import Loader from "./components/Loader";
 import { Toaster } from "react-hot-toast";
+import { getCurrentUser } from "./redux/features/auth/authAction";
 function App() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserSession = async () => {
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
-
-      if (session) {
-        const { data: userData, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("auth_id", session.user.id)
-          .single();
-
-        if (!error) {
-          dispatch(
-            setAuthUser({
-              id: userData.user_id,
-              authId: userData.auth_id,
-              email: userData.email,
-              fullName: userData.full_name,
-              schoolId: userData.school_id,
-            })
-          );
-
-          navigate("/dashboard");
-        }
-      } else {
-        dispatch(clearAuthState());
-        navigate("/login");
-        throw new Error(error?.message);
-      }
+    const helper = async () => {
+      const response = await dispatch(getCurrentUser());
+      
+      if (response?.payload) navigate("/dashboard");
+      else navigate("/login");
     };
 
-    fetchUserSession();
-  }, []);
+    helper();
+  }, [dispatch]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const openModal = () => {
@@ -64,7 +38,7 @@ function App() {
     setIsLoading(val);
   };
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+    <div className="min-h-screen bg-[#000000]">
       <CongratulationsModal isOpen={isModalOpen} onClose={closeModal} />
       {isLoading && <Loader fullScreen={true} />}
       <Routes>

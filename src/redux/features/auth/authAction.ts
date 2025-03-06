@@ -1,104 +1,75 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { supabase } from "../../../../supabase/supabase.client"; // Ensure you have the client setup
+import axiosInstance from "../../../helper/axiosInstance";
 import toast from "react-hot-toast";
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
-  async (
-    { email, password }: { email: string; password: string },
-    { rejectWithValue }
-  ) => {
+  async ({ email, password }: { email: string; password: string }) => {
     try {
-      const { data: authData, error: signInError } =
-        await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-      if (signInError) {
-        toast.error(signInError.message);
-        throw new Error(signInError.message);
-      }
-
-      const { data: userData, error: userError } = await supabase
-        .from("users")
-        .select("*")
-        .eq("auth_id", authData.user?.id)
-        .single();
-
-      if (userError) {
-        toast.error(userError.message);
-        throw new Error(userError.message);
-      }
-      toast.success("Logged In Successfully!!");
-      return {
-        email: userData?.email,
-        fullName: userData?.full_name,
-        schoolId: userData?.school_id,
-        id: userData?.user_id,
-      }; // Return user data for potential chaining
-    } catch (error: any) {
-      toast.error(error?.message);
-      return rejectWithValue(error.message);
+      const response = await axiosInstance.post("/users/login-user", {
+        email,
+        password,
+      });
+      toast.success(response.data?.message);
+      return response.data.data.user;
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Something went wrong");
+      throw error;
     }
   }
 );
 
-export const logoutUser = createAsyncThunk(
-  "auth/logoutUser",
-  async (_, { rejectWithValue }) => {
-    try {
-      await supabase.auth.signOut();
-
-      toast.success("Logged Out Successfully!!");
-    } catch (error: any) {
-      toast.error(error.message);
-      return rejectWithValue(error.message);
-    }
+export const getCurrentUser = createAsyncThunk(
+  "auth/getCurrentUser",
+  async () => {
+    const response = await axiosInstance.get("/users/get-current-user");
+    return response.data.data.user;
   }
 );
+
+export const logoutUser = createAsyncThunk("auth/logout", async () => {
+  try {
+    const response = await axiosInstance.post("/users/logout-user");
+    toast.success(response.data?.message);
+    return response.data;
+  } catch (error: any) {
+    toast.error(error?.response?.data?.error);
+    throw error;
+  }
+});
 // Thunk to handle user registration
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async ({
     email,
     password,
-    fullName,
+    name,
     schoolId,
+    student_class,
+    contact = "9112345678",
   }: {
     email: string;
     password: string;
-    fullName: string;
+    name: string;
     schoolId: string;
+    student_class: string;
+    contact: string;
   }) => {
     try {
-      const { data: user, error: SignUpError } = await supabase.auth.signUp({
+      const response = await axiosInstance.post("/users/sign-up", {
+        name,
         email,
         password,
+        school_id:schoolId,
+        student_class,
+        contact,
       });
-
-      if (SignUpError) {
-        toast.error(SignUpError.message);
-        throw new Error(SignUpError.message);
-      }
-
-      const { error: userError } = await supabase.from("users").insert({
-        auth_id: user?.user?.id,
-        email,
-        password,
-        full_name: fullName,
-        school_id: schoolId,
-      });
-
-      if (userError) {
-        toast.error(userError.message);
-        throw new Error(userError.message);
-      }
 
       toast.success("Registraion Successfull, Login Please!!");
-      return user;
-    } catch (err: any) {
-      throw new Error(err.message || "Registration failed");
+      return response.data.data;
+    } catch (error: any) {
+      toast.error(error?.response?.data?.error);
+      throw error;
     }
   }
 );

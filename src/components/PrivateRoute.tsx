@@ -8,10 +8,10 @@ interface PrivateRouteProps {
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const { user, loading } = useAppSelector((state) => state.auth);
+  
   if (loading) {
     return <div>Loading...</div>;
   }
-
   if (user) {
     return <>{children}</>;
   }

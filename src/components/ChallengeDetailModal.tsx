@@ -61,14 +61,14 @@ const ChallengeDetailModal: React.FC<ChallengeDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[#1B2537] rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
+      <div className="bg-black rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="p-6 space-y-6">
           {/* Header */}
           <div className="flex items-start justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-white">
-                {userChallenge.challenge_details.challenge_name}
+              <h2 className="text-2xl font-bold text-white uppercase">
+                {userChallenge.challenge_details.name}
               </h2>
               <div className="mt-2 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-500">
                 {userChallenge.challenge_details.is_active
@@ -86,34 +86,44 @@ const ChallengeDetailModal: React.FC<ChallengeDetailModalProps> = ({
 
           {/* Challenge Info */}
           <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center gap-3 text-gray-300">
-                <Calendar className="text-[#FF5722]" size={20} />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex items-center gap-3 text-white font-bold">
+                <Calendar className="text-[#EA580C]" size={20} />
                 <div>
-                  <p className="text-sm text-gray-400">Start Date</p>
+                  <p className="text-sm font-normal">Start Date</p>
                   <p>
                     {formatDate(userChallenge.challenge_details.start_date)}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 text-gray-300">
-                <Calendar className="text-[#FF5722]" size={20} />
+              <div className="flex items-center gap-3 text-white font-bold">
+                <Calendar className="text-[#EA580C]" size={20} />
                 <div>
-                  <p className="text-sm text-gray-400">End Date</p>
+                  <p className="text-sm font-normal">End Date</p>
                   <p>{formatDate(userChallenge.challenge_details.end_date)}</p>
                 </div>
               </div>
-            </div>
-
-            <div className="flex items-center gap-3 text-gray-300">
-              <Clock className="text-[#FF5722]" size={20} />
-              <div>
-                <p className="text-sm text-gray-400">Registration Date</p>
-                <p>
-                  {formatDate(
-                    userChallenge.registration_details.registration_date
-                  )}
-                </p>
+              <div className="flex items-center gap-3 text-white font-bold">
+                <Clock className="text-[#EA580C]" size={20} />
+                <div>
+                  <p className="text-sm font-normal">Registration Date</p>
+                  <p>
+                    {formatDate(
+                      userChallenge.registration_details.registration_date
+                    )}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 text-white font-bold">
+                <Clock className="text-[#EA580C]" size={20} />
+                <div>
+                  <p className="text-sm font-normal">Allotment</p>
+                  <p>
+                    {userChallenge.registration_details?.allotment_status
+                      ? "Alloted"
+                      : "Pending"}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -121,23 +131,23 @@ const ChallengeDetailModal: React.FC<ChallengeDetailModalProps> = ({
             {userChallenge.team_details.team_members.length > 1 && (
               <div className="border-t border-gray-700/50 pt-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <Users className="text-[#FF5722]" size={20} />
+                  <Users className="text-[#EA580C]" size={20} />
                   <h3 className="text-lg font-semibold text-white">
                     Team Details
                   </h3>
                 </div>
-                <div className="bg-[#141B2B] rounded-lg p-4">
-                  <p className="text-gray-300 mb-3">
+                <div className="bg-[#222222] rounded-lg p-4">
+                  <p className="text-white font-bold mb-3">
                     Team Name: {userChallenge.team_details.team_name}
                   </p>
                   <div className="space-y-2">
                     {userChallenge.team_details.team_members.map((member) => (
                       <div
                         key={member.user_id}
-                        className="flex items-center justify-between text-sm text-gray-300 bg-[#1B2537] p-2 rounded"
+                        className="flex items-center justify-between text-sm text-white bg-[#535353] p-2 rounded"
                       >
                         <span>{member.full_name}</span>
-                        <span className="text-gray-400">{member.email}</span>
+                        <span className="text-white">{member.email}</span>
                       </div>
                     ))}
                   </div>
@@ -150,26 +160,26 @@ const ChallengeDetailModal: React.FC<ChallengeDetailModalProps> = ({
               userChallenge.challenge_details.preferences.length > 0 && (
                 <div className="border-t border-gray-700/50 pt-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <Building2 className="text-[#FF5722]" size={20} />
+                    <Building2 className="text-[#EA580C]" size={20} />
                     <h3 className="text-lg font-semibold text-white">
                       Preferences
                     </h3>
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-4 max-h-[200px] overflow-y-scroll no-scrollbar">
                     {userChallenge.challenge_details.preferences.map(
                       (committee) => (
                         <div
                           key={committee.committee_id}
-                          className="bg-[#141B2B] rounded-lg p-4"
+                          className="bg-[#222222] rounded-lg p-4"
                         >
-                          <h4 className="text-white font-medium mb-2">
+                          <h4 className="text-white font-bold mb-2">
                             {committee.committee_name}
                           </h4>
                           <div className="flex flex-wrap gap-2">
                             {committee.portfolios.map((portfolio) => (
                               <span
                                 key={portfolio.portfolio_id}
-                                className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#1B2537] text-gray-300"
+                                className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-black border border-[#EA580C] text-white"
                               >
                                 {portfolio.portfolio_name}
                               </span>
