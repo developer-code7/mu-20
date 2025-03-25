@@ -14,7 +14,7 @@ import { fetchChallengeById } from "../redux/features/challenges/challengesActio
 import { ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
 import { Challenge } from "../types/type";
-import art from "../../assets/Art.png";
+import art from "../../assets/art.png";
 interface ChallengeRegisterationProps {
   openModal: () => void;
   handleLoading: (val: boolean) => void;
