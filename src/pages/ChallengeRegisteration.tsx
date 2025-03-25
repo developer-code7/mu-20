@@ -91,6 +91,7 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
   useEffect(() => {
     setAvailableSteps(getAvailableSteps());
   }, [formData.challenge]);
+  
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -166,9 +167,6 @@ const ChallengeRegisteration: React.FC<ChallengeRegisterationProps> = ({
         ...newPreferences[committeeId],
         portfolio_preferences: [{ portfolio_id, portfolio_name }],
       };
-
-      console.log(newPreferences);
-
       return { ...prev, committee_preferences: newPreferences };
     });
     setError(null);

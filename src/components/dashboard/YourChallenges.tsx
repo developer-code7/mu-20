@@ -26,7 +26,6 @@ const YourChallenges = () => {
     }
   }, [user, dispatch]);
 
-  
   const handleViewDetails = (challenge: ChallengeRegistration) => {
     setSelectedChallenge(challenge);
     setIsDetailModalOpen(true);
@@ -36,7 +35,7 @@ const YourChallenges = () => {
     setIsDetailModalOpen(false);
     setSelectedChallenge(null);
   };
-
+  
   return (
     <div className="min-h-screen space-y-6 relative">
       <div className="flex sm:flex-row flex-col items-start gap-2 sm:justify-between sm:items-center">

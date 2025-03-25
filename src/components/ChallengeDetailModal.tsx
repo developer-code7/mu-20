@@ -68,7 +68,7 @@ const ChallengeDetailModal: React.FC<ChallengeDetailModalProps> = ({
           <div className="flex items-start justify-between">
             <div>
               <h2 className="text-2xl font-bold text-white uppercase">
-                {userChallenge.challenge_details.name}
+                {userChallenge.challenge_details.challenge_name}
               </h2>
               <div className="mt-2 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-500">
                 {userChallenge.challenge_details.is_active

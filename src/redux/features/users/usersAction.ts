@@ -1,9 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { supabase } from "../../../../supabase/supabase.client"; // Adjust the path
 import {
   fetchUsersStart,
   fetchUsersSuccess,
-  fetchUsersFailure,
+  fetchUsersFailure,s
 } from "./usersSlice";
 import toast from "react-hot-toast";
 import axiosInstance from "../../../helper/axiosInstance";

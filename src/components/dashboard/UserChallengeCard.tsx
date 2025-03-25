@@ -12,7 +12,6 @@ const UserChallengeCard: React.FC<UserChallengeCardProps> = ({
   activeTab,
   onViewDetails,
 }) => {
-  console.log(challenge);
   return (
     <div
       key={challenge?.registration_details?.challenge_id}
@@ -21,7 +20,7 @@ const UserChallengeCard: React.FC<UserChallengeCardProps> = ({
       <div className="flex flex-col justify-normal w-full">
         <div className="flex items-center">
           <h3 className="sm:text-xl text-sm font-bold text-white uppercase">
-            {challenge?.challenge_details?.name}
+            {challenge?.challenge_details?.challenge_name}
           </h3>
           {activeTab === "upcoming" ? (
             <div className="sm:px-3 sm:py-1 px-2   bg-green-900 text-green-300 sm:text-sm text-[10px] font-medium rounded-full  ml-auto">
