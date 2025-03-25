@@ -13,7 +13,7 @@ export const loginUser = createAsyncThunk(
       toast.success(response.data?.message);
       return response.data.data.user;
     } catch (error) {
-      toast.error(error?.response?.data?.error || "Something went wrong");
+      toast.error("Something went wrong");
       throw error;
     }
   }
@@ -33,7 +33,7 @@ export const logoutUser = createAsyncThunk("auth/logout", async () => {
     toast.success(response.data?.message);
     return response.data;
   } catch (error: any) {
-    toast.error(error?.response?.data?.error);
+    toast.error("Something went wrong");
     throw error;
   }
 });
@@ -68,7 +68,7 @@ export const registerUser = createAsyncThunk(
       toast.success("Registraion Successfull, Login Please!!");
       return response.data.data;
     } catch (error: any) {
-      toast.error(error?.response?.data?.error);
+      toast.error("Something went wrong");
       throw error;
     }
   }

@@ -25,7 +25,7 @@ export const fetchChallenges = createAsyncThunk(
       // Dispatch the final data
       dispatch(fetchChallengesSuccess(response?.data?.data));
     } catch (error: any) {
-      toast.error(error?.response?.data?.error || "Something went wrong");
+      toast.error("Something went wrong");
       dispatch(fetchChallengesFailure(error?.response?.data?.error));
       throw error;
     }
@@ -42,6 +42,7 @@ export const fetchChallengeById = createAsyncThunk(
 
       return { ...response?.data?.data };
     } catch (error: any) {
+      toast.error("Something went wrong");
       return rejectWithValue(error.message);
     }
   }
@@ -55,6 +56,7 @@ export const fetchUserChallenges = createAsyncThunk(
 
       return response.data.data;
     } catch (error: any) {
+      toast.error("Something went wrong");
       return rejectWithValue(error.message);
     }
   }

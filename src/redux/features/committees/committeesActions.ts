@@ -20,7 +20,7 @@ export const fetchCommitteesByChallengeId = createAsyncThunk(
 
       return response.data.data;
     } catch (error: any) {
-      toast.error(error?.response?.data?.error || "Something went wrong");
+      toast.error("Something went wrong");
 
       dispatch(fetchCommitteesFailure(error.message));
       throw error;

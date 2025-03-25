@@ -17,7 +17,7 @@ export const fetchSchools = createAsyncThunk(
 
       dispatch(fetchSchoolsSuccess(response.data.data));
     } catch (error: any) {
-      toast.error(error?.response?.data?.error);
+      toast.error("Something went wrong");
       fetchSchoolsFailure(error?.response?.data?.error);
       throw error;
     }

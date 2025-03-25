@@ -45,7 +45,7 @@ export const registerForChallenge = async (formData: FormData) => {
 
         return response?.data.data;
       } catch (error) {
-        toast.error(error?.response.data.error);
+        toast.error("Something went wrong");
         throw new Error(error?.response.data.error);
       }
     };
@@ -67,7 +67,7 @@ export const registerForChallenge = async (formData: FormData) => {
         );
         return response?.data.data;
       } catch (error) {
-        toast.error(error?.response.data.error);
+        toast.error("Something went wrong");
         throw new Error(error?.response.data.error);
       }
     };
@@ -88,7 +88,7 @@ export const registerForChallenge = async (formData: FormData) => {
         );
         return response?.data.data;
       } catch (error) {
-        toast.error(error?.response.data.error);
+        toast.error("Something went wrong");
 
         throw new Error(error?.response.data.error);
       }
@@ -147,7 +147,7 @@ export const registerForChallenge = async (formData: FormData) => {
         );
         return response?.data.data;
       } catch (error) {
-        toast.error(error?.response.data.error);
+        toast.error("Something went wrong");
 
         throw new Error(error?.response.data.error);
       }
