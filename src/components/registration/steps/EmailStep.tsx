@@ -1,11 +1,13 @@
 import React from 'react';
+import { RegistrationData } from '../../../types/type';
 
 interface EmailStepProps {
   email: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  errors: Partial<RegistrationData>;
 }
 
-const EmailStep: React.FC<EmailStepProps> = ({ email, onChange }) => {
+const EmailStep: React.FC<EmailStepProps> = ({ email, onChange,errors }) => {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -20,6 +22,9 @@ const EmailStep: React.FC<EmailStepProps> = ({ email, onChange }) => {
         placeholder="Enter your email"
         required
       />
+      {errors.email && (
+              <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+            )}
     </div>
   );
 };

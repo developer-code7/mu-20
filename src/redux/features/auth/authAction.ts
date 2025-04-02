@@ -46,7 +46,7 @@ export const registerUser = createAsyncThunk(
     name,
     schoolId,
     student_class,
-    contact = "9112345678",
+    contact,
   }: {
     email: string;
     password: string;

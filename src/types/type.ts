@@ -90,3 +90,12 @@ export interface AllotmentDetails {
   portfolio_id: string;
   portfolio_name: string;
 }
+
+export interface RegistrationData {
+  fullname: string;
+  email: string;
+  password: string;
+  school_id: string;
+  student_class: string;
+  contact: string;
+}

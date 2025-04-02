@@ -1,11 +1,17 @@
 import React from "react";
+import { RegistrationData } from "../../../types/type";
 
 interface BasicInfoStepProps {
   name: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  errors: Partial<RegistrationData>;
 }
 
-const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ name, onChange }) => {
+const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
+  name,
+  onChange,
+  errors,
+}) => {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -33,6 +39,9 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ name, onChange }) => {
         placeholder="Enter your class"
         required
       /> */}
+      {errors.fullname && (
+        <p className="mt-1 text-sm text-red-600">{errors.fullname}</p>
+      )}
     </div>
   );
 };

@@ -6,6 +6,7 @@ import mainLogo from "../../assets/main-logo.png";
 import loginbg from "../../assets/loginbg.png";
 
 import login from "../../assets/login.png";
+import Register from "./Register";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,115 +20,128 @@ const Login = () => {
     navigate("/dashboard");
   };
 
+  const [isLogin, setIsLogin] = useState(true);
+
   return (
-    <div className="min-h-screen w-full flex relative overflow-hidden">
-      {/* Left half - Background Image */}
-      <div
-        className="absolute top-0 left-0 w-[60%] h-full bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url(${loginbg})`,
-        }}
-      ></div>
+    <>
+      {isLogin ? (
+        <div className="min-h-screen w-full flex relative overflow-hidden">
+          {/* Left half - Background Image */}
+          <div
+            className="absolute top-0 left-0 w-[60%] h-full bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url(${loginbg})`,
+            }}
+          ></div>
 
-      {/* Slanted divider */}
+          {/* Slanted divider */}
 
-      {/* Right half - Pattern Background */}
-      <div className=" absolute top-0 right-0 w-[50%] h-full bg-black">
-        <div
-          className="w-full h-full opacity-20"
-          style={{
-            backgroundImage:
-              'url("https://images.unsplash.com/photo-1557683316-973673baf926?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1429&q=80")',
-            backgroundSize: "cover",
-            backgroundBlendMode: "overlay",
-          }}
-        ></div>
-      </div>
-
-      {/* Login Card */}
-      <div className="w-full max-w-5xl mx-auto my-auto p-4 z-10">
-        <div className="bg-white rounded-3xl overflow-hidden shadow-xl flex flex-col md:flex-row">
-          {/* Left side - Image */}
-          <div className="p-3  md:w-1/2 h-64 md:h-auto hidden sm:flex">
-            <img
-              src={login}
-              alt="Auditorium with audience"
-              className="w-full h-full object-cover rounded-lg"
-            />
+          {/* Right half - Pattern Background */}
+          <div className=" absolute top-0 right-0 w-[50%] h-full bg-black">
+            <div
+              className="w-full h-full opacity-20"
+              style={{
+                backgroundImage:
+                  'url("https://images.unsplash.com/photo-1557683316-973673baf926?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1429&q=80")',
+                backgroundSize: "cover",
+                backgroundBlendMode: "overlay",
+              }}
+            ></div>
           </div>
 
-          {/* Right side - Login Form */}
-          <div className="md:w-1/2 p-8 md:p-12 flex flex-col ">
-            <img
-              src={mainLogo}
-              alt="logo"
-              className="mb-8 w-[250px] h-[85px] ml-auto mr-auto"
-            />
-            <h1 className="text-2xl font-bold mb-2">Welcome Back 👋</h1>
-            <p className="text-gray-600 mb-6">
-              Today is a new day. It's your day. You shape it.
-              <br />
-              Sign in to start managing your projects.
-            </p>
-
-            <form onSubmit={handleSubmit} className="flex flex-col">
-              <div className="mb-4">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  placeholder="Example@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  required
+          {/* Login Card */}
+          <div className="w-full max-w-5xl mx-auto my-auto p-4 z-10">
+            <div className="bg-white rounded-3xl overflow-hidden shadow-xl flex flex-col md:flex-row">
+              {/* Left side - Image */}
+              <div className="p-3  md:w-1/2 h-64 md:h-auto hidden sm:flex">
+                <img
+                  src={login}
+                  alt="Auditorium with audience"
+                  className="w-full h-full object-cover rounded-lg"
                 />
               </div>
 
-              <div className="mb-2">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  placeholder="At least 8 characters"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  required
-                  minLength={8}
+              {/* Right side - Login Form */}
+              <div className="md:w-1/2 p-8 md:p-12 flex flex-col ">
+                <img
+                  src={mainLogo}
+                  alt="logo"
+                  className="mb-8 w-[250px] h-[85px] ml-auto mr-auto"
                 />
-              </div>
+                <h1 className="text-2xl font-bold mb-2">Welcome Back 👋</h1>
+                <p className="text-gray-600 mb-6">
+                  Today is a new day. It's your day. You shape it.
+                  <br />
+                  Sign in to start managing your projects.
+                </p>
 
-              <div className="flex justify-end mb-6">
-                <a
-                  href="#"
-                  className="text-sm text-blue-600 hover:text-blue-800"
-                >
-                  Forgot Password?
-                </a>
-              </div>
+                <form onSubmit={handleSubmit} className="flex flex-col">
+                  <div className="mb-4">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      placeholder="Example@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      required
+                    />
+                  </div>
 
-              <button
-                type="submit"
-                className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition-colors"
-              >
-                Sign in
-              </button>
-            </form>
+                  <div className="mb-2">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      placeholder="At least 8 characters"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      required
+                      minLength={8}
+                    />
+                  </div>
+
+                  <div className="flex justify-end mb-6">
+                    <p className="text-sm text-gray-600 mr-auto">
+                      Don't have an account?{" "}
+                      <button
+                        onClick={() => setIsLogin(false)}
+                        className="font-medium text-[#1E4AE9]"
+                      >
+                        Register
+                      </button>
+                    </p>
+                    <a href="#" className="text-sm text-[#1E4AE9]">
+                      Forgot Password?
+                    </a>
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition-colors"
+                  >
+                    Sign in
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      ) : (
+        <Register handleSignIn={() => setIsLogin(true)} />
+      )}
+    </>
   );
 };
 

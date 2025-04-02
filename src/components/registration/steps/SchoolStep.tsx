@@ -2,14 +2,15 @@ import React, { useEffect, useState, useRef } from "react";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { fetchSchools } from "../../../redux/features/schools/schoolsActions";
-import { School } from "../../../types/type";
+import { RegistrationData, School } from "../../../types/type";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface SchoolStepProps {
   onChange: (id: string) => void;
+  errors: Partial<RegistrationData>;
 }
 
-const SchoolStep: React.FC<SchoolStepProps> = ({ onChange }) => {
+const SchoolStep: React.FC<SchoolStepProps> = ({ onChange, errors }) => {
   const dispatch = useAppDispatch();
   const { data: schools, loading } = useAppSelector((state) => state.schools);
   const [selectedSchool, setSelectedSchool] = useState<School>({
@@ -112,6 +113,9 @@ const SchoolStep: React.FC<SchoolStepProps> = ({ onChange }) => {
           )}
         </ul>
       )}
+      {errors.school_id && (
+            <p className="mt-1 text-sm text-red-600">{errors.school_id}</p>
+          )}
     </div>
   );
 };

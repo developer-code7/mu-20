@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
+import { RegistrationData } from "../../../types/type";
 
 interface PasswordStepProps {
   password: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  errors: Partial<RegistrationData>;
 }
 
-const PasswordStep: React.FC<PasswordStepProps> = ({ password, onChange }) => {
+const PasswordStep: React.FC<PasswordStepProps> = ({
+  password,
+  onChange,
+  errors,
+}) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -41,8 +47,12 @@ const PasswordStep: React.FC<PasswordStepProps> = ({ password, onChange }) => {
         </button>
       </div>
       <p className="mt-2 text-sm text-gray-500">
-        Password must be 6-10 characters with at least one uppercase letter and one special character
+        Password must be 6-10 characters with at least one uppercase letter and
+        one special character
       </p>
+      {errors.password && (
+        <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+      )}
     </div>
   );
 };
