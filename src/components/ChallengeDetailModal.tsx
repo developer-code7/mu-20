@@ -1,5 +1,5 @@
 import React from "react";
-import { X, Users, Calendar, Clock, Building2 } from "lucide-react";
+import { X, Users, Calendar, Clock, Building2, Check } from "lucide-react";
 
 interface Portfolio {
   portfolio_id: string;
@@ -10,6 +10,13 @@ interface Committee {
   portfolios: Portfolio[];
   committee_id: string;
   committee_name: string;
+}
+
+interface AllotmentDetails {
+  committee_id: string;
+  committee_name: string;
+  portfolio_id: string;
+  portfolio_name: string;
 }
 
 interface TeamMember {
@@ -26,6 +33,7 @@ interface UserChallenge {
     challenge_id: string;
     registration_id: string;
     registration_date: string;
+    allotment_status: boolean;
   };
   challenge_details: {
     end_date: string;
@@ -41,6 +49,7 @@ interface UserChallenge {
     team_name: string;
     team_members: TeamMember[];
   };
+  allotment_details: AllotmentDetails[] | null;
 }
 
 interface ChallengeDetailModalProps {
@@ -115,14 +124,35 @@ const ChallengeDetailModal: React.FC<ChallengeDetailModalProps> = ({
                 </div>
               </div>
               <div className="flex items-center gap-3 text-white font-bold">
-                <Clock className="text-[#EA580C]" size={20} />
+                {userChallenge.registration_details?.allotment_status ? (
+                  <Check className="text-[#EA580C]" size={20} />
+                ) : (
+                  <Clock className="text-[#EA580C]" size={20} />
+                )}
                 <div>
                   <p className="text-sm font-normal">Allotment</p>
-                  <p>
-                    {userChallenge.registration_details?.allotment_status
-                      ? "Alloted"
-                      : "Pending"}
-                  </p>
+                  {userChallenge.registration_details.allotment_status ? (
+                    <div>
+                      {userChallenge.allotment_details?.map((detail) => (
+                        <div key={detail.portfolio_id}>
+                          <p className="text-sm font-normal">
+                            Committee:{" "}
+                            <span className="text-white font-bold">
+                              {detail.committee_name}
+                            </span>
+                          </p>
+                          <p className="text-sm font-normal">
+                            Portfolio:{" "}
+                            <span className="text-white font-bold">
+                              {detail.portfolio_name}
+                            </span>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p> Pending</p>
+                  )}
                 </div>
               </div>
             </div>

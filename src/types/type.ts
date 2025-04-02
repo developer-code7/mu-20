@@ -81,4 +81,12 @@ export interface ChallengeRegistration {
   registration_details: RegistrationDetails;
   challenge_details: ChallengeDetails;
   team_details: TeamDetails;
+  allotment_details: AllotmentDetails | null;
+}
+
+export interface AllotmentDetails {
+  committee_id: string;
+  committee_name: string;
+  portfolio_id: string;
+  portfolio_name: string;
 }
