@@ -18,6 +18,7 @@ const Register: React.FC<RegisterProps> = ({ handleSignIn }) => {
     school_id: "",
     student_class: "",
     contact: "",
+    gender: "",
   });
 
   const [errors, setErrors] = useState<Partial<RegistrationData>>({});
@@ -29,7 +30,9 @@ const Register: React.FC<RegisterProps> = ({ handleSignIn }) => {
     if (!formData.fullname.trim()) {
       newErrors.fullname = "Full name is required";
     }
-
+    if (!formData.gender.trim()) {
+      newErrors.gender = "Gender is required";
+    }
     // Email validation
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
@@ -84,6 +87,7 @@ const Register: React.FC<RegisterProps> = ({ handleSignIn }) => {
         schoolId: formData.school_id,
         student_class: formData.student_class,
         contact: formData.contact,
+        gender: formData.gender,
       };
 
       // Dispatch registerUser action
@@ -136,6 +140,28 @@ const Register: React.FC<RegisterProps> = ({ handleSignIn }) => {
             onChange={handleInputChange}
             errors={errors}
           />
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Gender
+            </label>
+            <select
+              value={formData.gender}
+              onChange={(e) =>
+                setFormData({ ...formData, gender: e.target.value })
+              }
+              className={`w-full px-3 py-2 border overflow-auto  ${
+                errors.gender ? "border-red-300" : "border-gray-300"
+              } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            >
+              <option value="">Select Gender</option>
+
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+            {errors.gender && (
+              <p className="mt-1 text-sm text-red-600">{errors.gender}</p>
+            )}
+          </div>
           <SchoolStep onChange={handleSchoolSelect} errors={errors} />
           <div className="flex flex-col gap-4">
             <div>

@@ -47,6 +47,7 @@ export const registerUser = createAsyncThunk(
     schoolId,
     student_class,
     contact,
+    gender,
   }: {
     email: string;
     password: string;
@@ -54,15 +55,17 @@ export const registerUser = createAsyncThunk(
     schoolId: string;
     student_class: string;
     contact: string;
+    gender: string;
   }) => {
     try {
       const response = await axiosInstance.post("/users/sign-up", {
         name,
         email,
         password,
-        school_id:schoolId,
+        school_id: schoolId,
         student_class,
         contact,
+        gender,
       });
 
       toast.success("Registraion Successfull, Login Please!!");

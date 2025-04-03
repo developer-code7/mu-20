@@ -98,4 +98,5 @@ export interface RegistrationData {
   school_id: string;
   student_class: string;
   contact: string;
+  gender: string;
 }
