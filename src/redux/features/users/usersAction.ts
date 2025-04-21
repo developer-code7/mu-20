@@ -3,7 +3,6 @@ import {
   fetchUsersStart,
   fetchUsersSuccess,
   fetchUsersFailure,
-  s,
 } from "./usersSlice";
 import toast from "react-hot-toast";
 import axiosInstance from "../../../helper/axiosInstance";

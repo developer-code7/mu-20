@@ -46,13 +46,18 @@ const TeamStep: React.FC<TeamStepProps> = ({
 
   useEffect(() => {
     if (users) {
-      setFilteredUsers(
-        users.filter(
-          (user) =>
-            user.id !== teamLeader?.id &&
-            user.full_name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+      const uniqueUsersMap = new Map<string, User>();
+      users.forEach((user) => {
+        if (user.id !== teamLeader?.id) {
+          uniqueUsersMap.set(user.id, user);
+        }
+      });
+
+      const uniqueUsers = Array.from(uniqueUsersMap.values()).filter((user) =>
+        user.full_name.toLowerCase().includes(searchTerm.toLowerCase())
       );
+
+      setFilteredUsers(uniqueUsers);
     }
   }, [users, searchTerm]);
 
@@ -118,10 +123,12 @@ const TeamStep: React.FC<TeamStepProps> = ({
             )}
           </div>
           {dropdownOpen && (
-            <div className="p-2 absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-60 overflow-auto mt-1 overflow-y-scroll h-[100px]">
+            <div className="p-2 absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-md mt-1 overflow-y-auto max-h-40">
               {loading ? (
                 <TextShimmer lines={2} />
-              ) : (
+              ) : filteredUsers.length === 0 ? (
+                <p className="text-gray-500 text-sm px-2 py-1">No users found</p>
+              ) :(
                 filteredUsers?.map((user) => {
                   if (user.id === teamLeader?.id) return null;
                   else
@@ -145,7 +152,7 @@ const TeamStep: React.FC<TeamStepProps> = ({
                           htmlFor={`user-${user.id}`}
                           className="ml-2 text-gray-600"
                         >
-                          {user.full_name}
+                          {`${user.email}`}
                         </label>
                       </div>
                     );

@@ -1,4 +1,6 @@
 export interface User {
+  gender: string;
+  notifications: string;
   id: string;
   email: string;
   full_name: string;

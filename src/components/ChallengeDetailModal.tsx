@@ -137,8 +137,8 @@ const ChallengeDetailModal: React.FC<ChallengeDetailModalProps> = ({
                         <div key={detail.portfolio_id}>
                           <p className="text-sm font-normal">
                             Committee:{" "}
-                            <span className="text-white font-bold">
-                              {detail.committee_name}
+                            <span className="text-white font-bold uppercase">
+                              {detail.committee_name.toUpperCase()}
                             </span>
                           </p>
                           <p className="text-sm font-normal">

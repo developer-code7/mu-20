@@ -4,7 +4,7 @@ import { useAppDispatch } from "../hooks/useAppDispatch";
 import { loginUser } from "../redux/features/auth/authAction";
 import mainLogo from "../../assets/main-logo.png";
 import loginbg from "../../assets/loginbg.png";
-
+import { Eye, EyeOff } from "lucide-react";
 import login from "../../assets/login.png";
 import Register from "./Register";
 const Login = () => {
@@ -21,7 +21,7 @@ const Login = () => {
   };
 
   const [isLogin, setIsLogin] = useState(true);
-
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <>
       {isLogin ? (
@@ -101,16 +101,38 @@ const Login = () => {
                     >
                       Password
                     </label>
-                    <input
-                      type="password"
-                      id="password"
-                      placeholder="At least 8 characters"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                      required
-                      minLength={8}
-                    />
+
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        id="password"
+                        placeholder="At least 8 characters"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full px-3 py-2 pr-16 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        required
+                        minLength={8}
+                      />
+
+                      {/* Toggle button */}
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="absolute top-1/2 right-3 transform -translate-y-1/2 flex items-center text-gray-500 hover:text-gray-700 text-sm"
+                      >
+                        {showPassword ? (
+                          <>
+                            <EyeOff className="h-5 w-5 mr-1" />
+                            Hide
+                          </>
+                        ) : (
+                          <>
+                            <Eye className="h-5 w-5 mr-1" />
+                            Show
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
 
                   <div className="flex justify-end mb-6">

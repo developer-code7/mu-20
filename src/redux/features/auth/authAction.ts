@@ -76,3 +76,41 @@ export const registerUser = createAsyncThunk(
     }
   }
 );
+
+export const updateUser = createAsyncThunk(
+  "auth/updateUser",
+  async (
+    {
+      id,
+      name,
+      email,
+      school,
+      school_id,
+      contact,
+    }: {
+      id: string;
+      name: string;
+      email: string;
+      school: string;
+      school_id: string | null;
+      contact: string;
+    },
+    thunkAPI
+  ) => {
+    try {
+      const response = await axiosInstance.put(`/users/update-user/${id}`, {
+        name,
+        email,
+        school,
+        school_id,
+        contact,
+      });
+
+      toast.success("User updated successfully!");
+      return response.data.data;
+    } catch (error: any) {
+      toast.error("Failed to update user");
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
